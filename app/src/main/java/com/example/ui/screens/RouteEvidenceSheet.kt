@@ -1,5 +1,7 @@
 package com.example.ui.screens
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -19,51 +21,47 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Accessible
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Balance
-import androidx.compose.material.icons.filled.Chat
-import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Construction
-import androidx.compose.material.icons.filled.DirectionsBus
-import androidx.compose.material.icons.filled.DirectionsSubway
 import androidx.compose.material.icons.filled.DirectionsWalk
-import androidx.compose.material.icons.filled.Elevator
 import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Landscape
 import androidx.compose.material.icons.filled.Lightbulb
-import androidx.compose.material.icons.filled.RecordVoiceOver
-import androidx.compose.material.icons.filled.Shield
-import androidx.compose.material.icons.filled.Storefront
-import androidx.compose.material.icons.filled.Traffic
+import androidx.compose.material.icons.filled.OpenInNew
+import androidx.compose.material.icons.filled.Report
 import androidx.compose.material.icons.filled.VerifiedUser
 import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material.icons.filled.WbTwilight
+import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.R
+import com.example.model.DayNightMode
+import com.example.model.EvidenceStatus
+import com.example.model.KnownCorridorEvidence
 import com.example.model.NavTab
+import com.example.model.RouteEvidenceItem
 import com.example.ui.theme.BorderCanvas
 import com.example.ui.theme.DeepSlateText
 import com.example.ui.theme.MistBlue
-import com.example.ui.theme.MonospaceDataLg
 import com.example.ui.theme.MonospaceDataMd
 import com.example.ui.theme.MonospaceDataSm
 import com.example.ui.theme.PrimaryActionBlue
@@ -73,6 +71,7 @@ import com.example.ui.theme.SlateMuted
 import com.example.ui.theme.SoftSage
 import com.example.ui.theme.Typography
 import com.example.ui.theme.VerifiedGreen
+import com.example.ui.theme.WarningAmber
 import com.example.viewmodel.LighthouseViewModel
 
 @Composable
@@ -82,6 +81,8 @@ fun RouteEvidenceSheet(
     modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
+    val dayNightMode by viewModel.dayNightMode.collectAsStateWithLifecycle()
+    val evidenceList = KnownCorridorEvidence.getEvidence(dayNightMode)
 
     Box(
         modifier = modifier
@@ -112,7 +113,7 @@ fun RouteEvidenceSheet(
                         modifier = Modifier.size(18.dp)
                     )
                     Text(
-                        text = "EPISTEMIC PROVENANCE v2.4",
+                        text = "EPISTEMIC PROVENANCE",
                         style = MonospaceDataSm.copy(fontWeight = FontWeight.Bold, letterSpacing = 1.sp),
                         color = PrimaryActionBlue
                     )
@@ -128,12 +129,12 @@ fun RouteEvidenceSheet(
 
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Text(
-                    text = "Route Evidence & Condition Provenance",
+                    text = "Route Evidence & Source Provenance",
                     style = Typography.headlineLarge,
                     color = DeepSlateText
                 )
                 Text(
-                    text = "Transparent pedestrian routing telemetry and civic sensor verification",
+                    text = "Official civic layers, dataset limitations, and unverified observation boundaries",
                     style = Typography.bodyMedium,
                     color = SlateMuted
                 )
@@ -160,7 +161,7 @@ fun RouteEvidenceSheet(
                                 .background(SoftSage)
                                 .padding(horizontal = 8.dp, vertical = 2.dp)
                         ) {
-                            Text(text = "Verified Active", style = MonospaceDataSm, color = VerifiedGreen)
+                            Text(text = "Mapped Corridor", style = MonospaceDataSm, color = VerifiedGreen)
                         }
                     }
 
@@ -178,12 +179,19 @@ fun RouteEvidenceSheet(
                         horizontalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
                         Box(modifier = Modifier.size(6.dp).clip(CircleShape).background(VerifiedGreen))
-                        Text(text = "Recommended: Valencia Illuminated Corridor (14 min • 0.6 mi)", style = Typography.bodySmall, color = DeepSlateText)
+                        Text(
+                            text = if (dayNightMode == DayNightMode.DAY) {
+                                "Route option: Valencia Corridor (14 min • 0.6 mi)"
+                            } else {
+                                "Route option: Valencia Corridor (16 min • 0.7 mi)"
+                            },
+                            style = Typography.bodySmall,
+                            color = DeepSlateText
+                        )
                     }
                 }
             }
 
-            // Epistemic Warnings
             // Banner 1: Conditions Can Change
             Box(
                 modifier = Modifier
@@ -240,7 +248,7 @@ fun RouteEvidenceSheet(
                     Column {
                         Text(text = "Epistemic Rule: Absences Are Not Guarantees", style = Typography.titleMedium, color = DeepSlateText)
                         Text(
-                            text = "No reports does NOT mean zero risk. Installed physical streetlamps do not guarantee active lumen output.",
+                            text = "No report does not mean no problem. SFPUC light pole inventory is not proof that a lamp currently works.",
                             style = Typography.bodySmall,
                             color = SlateMuted
                         )
@@ -262,7 +270,7 @@ fun RouteEvidenceSheet(
                 ) {
                     Icon(imageVector = Icons.Default.Balance, contentDescription = null, tint = VerifiedGreen, modifier = Modifier.size(18.dp))
                     Text(
-                        text = "Lighthouse NEVER uses property values or neighborhood demographics as safety proxies.",
+                        text = "Lighthouse never infers danger from protected class, housing status, wealth, or neighborhood identity.",
                         style = Typography.bodySmall.copy(fontWeight = FontWeight.Medium),
                         color = DeepSlateText
                     )
@@ -292,89 +300,25 @@ fun RouteEvidenceSheet(
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                         Box(modifier = Modifier.size(6.dp).clip(CircleShape).background(VerifiedGreen))
-                        Text(text = "Valencia Greenway Transition · Optimal Visibility", style = MonospaceDataSm, color = PureWhiteCard)
+                        Text(text = "Valencia Street Pedestrian Corridor • 16th St to 19th St", style = MonospaceDataSm, color = PureWhiteCard)
                     }
                 }
             }
 
-            // 6 Verification Datasets
+            // Normalized Evidence Section
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "VERIFICATION EVIDENCE", style = Typography.labelLarge.copy(letterSpacing = 1.sp), color = DeepSlateText)
-                Text(text = "6 CIVIC DATASETS", style = MonospaceDataSm, color = SlateMuted)
+                Text(text = "CIVIC SOURCE EVIDENCE", style = Typography.labelLarge.copy(letterSpacing = 1.sp), color = DeepSlateText)
+                Text(text = "${evidenceList.size} CONTRACT LAYERS", style = MonospaceDataSm, color = SlateMuted)
             }
 
-            // Dataset 1: Lighting
-            EvidenceCard(
-                title = "Lighting & Streetlamp Integrity",
-                source = "SFPUC Luminescence Stream · Synced 12m ago",
-                icon = Icons.Default.Lightbulb,
-                rows = listOf(
-                    "Smart Pole Grid" to "98% Density along Valencia corridor",
-                    "SF 311 Outage Tickets" to "0 Open Tickets (2 on 17th bypass)",
-                    "Estimated Mean Foot-Candles" to "3.8 fc (Nominal)"
-                )
-            )
-
-            // Dataset 2: Accessibility
-            EvidenceCard(
-                title = "Sidewalk Accessibility & Terrain",
-                source = "ADA & Topography Ingestion · 100% Curb Cuts",
-                icon = Icons.Default.Accessible,
-                rows = listOf(
-                    "Curb Ramps" to "6 of 6 intersections compliant",
-                    "Slope Grade" to "Mild 2.8% (vs 6.4% on 17th St)",
-                    "Surface Path Status" to "Clear (Guerrero retrofit bypassed)"
-                )
-            )
-
-            // Dataset 3: Open-at-Arrival
-            EvidenceCard(
-                title = "Open-at-Arrival & POPOS",
-                source = "Civic Activity Eyes-on-Street · 4 Open Haven Anchors",
-                icon = Icons.Default.Storefront,
-                rows = listOf(
-                    "Tartine Bakery" to "Open till 8 PM · Active facade",
-                    "Bi-Rite Creamery" to "Open till 11 PM · Staff inside",
-                    "Walgreens Pharmacy" to "24/7 Active · Illuminated storefront"
-                )
-            )
-
-            // Dataset 4: Transit
-            EvidenceCard(
-                title = "Transit & Elevator Verification",
-                source = "BART & SFMTA GTFS-RT Feed",
-                icon = Icons.Default.DirectionsSubway,
-                rows = listOf(
-                    "16th St BART West Elevator" to "OPERATIONAL (Synced 4m ago)",
-                    "Muni 24-Divisadero & 14-Mission" to "Stops within 150 ft radius (< 3m walk)"
-                )
-            )
-
-            // Dataset 5: Vision Zero
-            EvidenceCard(
-                title = "High Injury Network (Vision Zero)",
-                source = "SFCTA Intersection Safety · Protected",
-                icon = Icons.Default.Traffic,
-                rows = listOf(
-                    "Vehicle Conflict Bypass" to "Path skirts 16th & Mission vehicle conflict zone",
-                    "Audible Pedestrian Chirps" to "Present on all crossings"
-                )
-            )
-
-            // Dataset 6: Ground Truth
-            EvidenceCard(
-                title = "Context & Community Ground Truth",
-                source = "Anonymized Block Ledger · Privacy Preserved",
-                icon = Icons.Default.Group,
-                rows = listOf(
-                    "Tonight's Community Walkers" to "3 opt-in reviews (clear sidewalks & open illumination)",
-                    "Deduplicated Incident History" to "Zero incidents (72h block rolling)"
-                )
-            )
+            // Evidence Cards with full provenance, URLs, and limitations
+            evidenceList.forEach { item ->
+                EvidenceContractCard(item = item)
+            }
 
             // Action Button
             Button(
@@ -399,7 +343,7 @@ fun RouteEvidenceSheet(
             }
 
             Text(
-                text = "Audit Hash: #0x9F41_CORRIDOR_VALENCIA_BART",
+                text = "Epistemic Provenance: 16th St Mission BART to Mission Dolores Park",
                 style = MonospaceDataSm.copy(fontSize = 10.sp),
                 color = SlateLight,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
@@ -411,12 +355,22 @@ fun RouteEvidenceSheet(
 }
 
 @Composable
-private fun EvidenceCard(
-    title: String,
-    source: String,
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    rows: List<Pair<String, String>>
-) {
+private fun EvidenceContractCard(item: RouteEvidenceItem) {
+    val context = LocalContext.current
+    val icon = when (item.category) {
+        "LIGHTING" -> Icons.Default.Lightbulb
+        "311_REPORTS" -> Icons.Default.Report
+        "SHADE" -> Icons.Default.WbSunny
+        "COMMUNITY" -> Icons.Default.Group
+        else -> Icons.Default.Info
+    }
+
+    val (statusLabel, statusBg, statusColor) = when (item.status) {
+        EvidenceStatus.AVAILABLE -> Triple("AVAILABLE", SoftSage, VerifiedGreen)
+        EvidenceStatus.UNKNOWN -> Triple("UNKNOWN", MistBlue, SlateMuted)
+        EvidenceStatus.COMMUNITY_UNVERIFIED -> Triple("UNVERIFIED", Color(0xFFFFF3CD), WarningAmber)
+    }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -427,39 +381,103 @@ private fun EvidenceCard(
             .padding(12.dp)
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            // Header Row: Icon + Title + Status Pill
             Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(MistBlue),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(imageVector = icon, contentDescription = null, tint = PrimaryActionBlue, modifier = Modifier.size(18.dp))
+                    }
+                    Column {
+                        Text(text = item.title, style = Typography.titleMedium.copy(fontWeight = FontWeight.Bold), color = DeepSlateText)
+                        Text(text = item.sourceName, style = MonospaceDataSm.copy(fontSize = 10.sp), color = SlateMuted)
+                    }
+                }
+
                 Box(
                     modifier = Modifier
-                        .size(32.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(MistBlue),
-                    contentAlignment = Alignment.Center
+                        .clip(CircleShape)
+                        .background(statusBg)
+                        .padding(horizontal = 8.dp, vertical = 2.dp)
                 ) {
-                    Icon(imageVector = icon, contentDescription = null, tint = PrimaryActionBlue, modifier = Modifier.size(18.dp))
-                }
-                Column {
-                    Text(text = title, style = Typography.titleMedium.copy(fontWeight = FontWeight.Bold), color = DeepSlateText)
-                    Text(text = source, style = MonospaceDataSm.copy(fontSize = 10.sp), color = SlateMuted)
+                    Text(text = statusLabel, style = MonospaceDataSm.copy(fontSize = 9.sp, fontWeight = FontWeight.Bold), color = statusColor)
                 }
             }
 
-            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                rows.forEach { (label, value) ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(6.dp))
-                            .background(MistBlue.copy(alpha = 0.3f))
-                            .padding(horizontal = 8.dp, vertical = 5.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(text = label, style = Typography.bodySmall.copy(fontWeight = FontWeight.Medium), color = DeepSlateText)
-                        Text(text = value, style = MonospaceDataSm, color = SlateMuted)
-                    }
+            // Summary
+            Text(
+                text = item.summary,
+                style = Typography.bodySmall,
+                color = DeepSlateText
+            )
+
+            // Provenance Limitation box
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(6.dp))
+                    .background(MistBlue.copy(alpha = 0.35f))
+                    .padding(8.dp)
+            ) {
+                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                    Text(
+                        text = "LIMITATION & PROVENANCE",
+                        style = MonospaceDataSm.copy(fontSize = 9.sp, fontWeight = FontWeight.Bold),
+                        color = SlateMuted
+                    )
+                    Text(
+                        text = item.limitation,
+                        style = Typography.bodySmall.copy(fontSize = 11.sp),
+                        color = DeepSlateText
+                    )
+                }
+            }
+
+            // Source URL Link & Dataset ID Row
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        try {
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(item.sourceUrl))
+                            context.startActivity(intent)
+                        } catch (_: Exception) {}
+                    },
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Dataset: ${item.sourceDatasetId}",
+                    style = MonospaceDataSm.copy(fontSize = 10.sp),
+                    color = SlateLight
+                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(2.dp)
+                ) {
+                    Text(
+                        text = "View source",
+                        style = Typography.labelSmall.copy(color = PrimaryActionBlue, fontSize = 11.sp)
+                    )
+                    Icon(
+                        imageVector = Icons.Default.OpenInNew,
+                        contentDescription = "Open source url",
+                        tint = PrimaryActionBlue,
+                        modifier = Modifier.size(12.dp)
+                    )
                 }
             }
         }

@@ -20,7 +20,7 @@ data class RouteOption(
     val durationMinutes: Int,
     val distanceMiles: Float,
     val elevationFt: Int,
-    val clarityOrLitScore: String, // "98% Clarity" or "96% LIT"
+    val clarityOrLitScore: String, // e.g. "Streetlight assets mapped" or "Grade < 3%"
     val bulletPoints: List<Pair<String, String>>, // (iconName, text)
     val contextNote: String,
     val openHavensCount: Int = 0,
@@ -32,17 +32,7 @@ data class RouteOption(
 enum class CommunityFilter(val label: String, val icon: String) {
     ALL("All Conditions", "view_agenda"),
     OUTAGES("SF 311 Outages", "lightbulb"),
-    TRANSIT("Transit & Elevators", "elevator"),
-    HAVENS("Safe Havens", "storefront"),
+    TRANSIT("Transit Stops", "elevator"),
+    HAVENS("Storefront Candidates", "storefront"),
     COMMUNITY("Community Observations", "group")
 }
-
-data class TelemetryState(
-    val connectionType: String = "5G",
-    val batteryPercent: Int = 98,
-    val isGuardianActive: Boolean = true,
-    val currentStreet: String = "18th St & Valencia, SF",
-    val gpsAccuracyFt: Int = 9,
-    val elevationM: Int = 42,
-    val meshFallbackArmed: Boolean = true
-)

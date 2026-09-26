@@ -365,7 +365,7 @@ fun PocketVoiceScreen(
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(8.dp))
                             .background(Color(0xFF263945))
-                            .clickable { viewModel.processLiveVoiceInput("Where is the nearest safe haven?") }
+                            .clickable { viewModel.processLiveVoiceInput("Where is the nearest storefront?") }
                             .padding(horizontal = 12.dp, vertical = 8.dp)
                     ) {
                         Row(
@@ -379,7 +379,7 @@ fun PocketVoiceScreen(
                                 modifier = Modifier.size(16.dp)
                             )
                             Text(
-                                text = "“Hey Lighthouse, where is nearest safe haven?”",
+                                text = "“Hey Lighthouse, nearest storefront”",
                                 style = Typography.bodySmall,
                                 color = PureWhiteCard
                             )
@@ -473,7 +473,7 @@ fun PocketVoiceScreen(
                     )
                 }
                 Text(
-                    text = "Hardware trigger: Double-press Volume Down to dispatch silent discreet distress ping.",
+                    text = "Use your device emergency shortcut if configured. This app does not silently dispatch a distress ping.",
                     style = Typography.bodySmall,
                     color = SlateLight
                 )
@@ -515,7 +515,7 @@ fun PocketVoiceScreen(
 
             // Call Maya Speed Dial
             Button(
-                onClick = { viewModel.callHumanContact("Maya Lin (Mom)") },
+                onClick = { viewModel.callPrimaryContact() },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp)

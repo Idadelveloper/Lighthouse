@@ -220,98 +220,19 @@ fun StreetViewInspectionSheet(
                         horizontalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
                         Text(
-                            text = "Date: ${sample.imageDate ?: "2025-03"}",
+                            text = "Image date: ${sample.imageDate ?: "unavailable"}",
                             style = MonospaceDataSm.copy(fontSize = 10.sp),
                             color = PureWhiteCard
                         )
-                        Text(text = "•", color = SlateLight)
-                        Text(
-                            text = "Gemini Conf: ${(sample.score?.confidence?.times(100))?.toInt() ?: 90}%",
-                            style = MonospaceDataSm.copy(fontSize = 10.sp),
-                            color = VerifiedGreen
-                        )
                     }
                 }
             }
 
-            // Gemini Factual Assessment Note
-            sample.score?.let { score ->
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(PureWhiteCard)
-                        .border(1.dp, BorderCanvas, RoundedCornerShape(12.dp))
-                        .padding(12.dp)
-                ) {
-                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(6.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Info,
-                                contentDescription = null,
-                                tint = PrimaryActionBlue,
-                                modifier = Modifier.size(16.dp)
-                            )
-                            Text(
-                                text = "GEMINI STREET ASSESSMENT",
-                                style = MonospaceDataSm.copy(fontSize = 10.sp, fontWeight = FontWeight.Bold),
-                                color = PrimaryActionBlue
-                            )
-                        }
-                        Text(
-                            text = "\"${score.note}\"",
-                            style = Typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
-                            color = DeepSlateText
-                        )
-                    }
-                }
-
-                // 5 Feature Scores Grid
-                Text(
-                    text = "WALK COMFORT SCORES (0-2)",
-                    style = MonospaceDataSm.copy(fontSize = 10.sp),
-                    color = SlateMuted
-                )
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(6.dp)
-                ) {
-                    ScorePill(
-                        label = "Shade",
-                        score = score.treeShade,
-                        icon = Icons.Default.Park,
-                        modifier = Modifier.weight(1f)
-                    )
-                    ScorePill(
-                        label = "Lighting",
-                        score = score.streetlights,
-                        icon = Icons.Default.FlashOn,
-                        modifier = Modifier.weight(1f)
-                    )
-                    ScorePill(
-                        label = "Sidewalk",
-                        score = score.sidewalk,
-                        icon = Icons.Default.CheckCircle,
-                        modifier = Modifier.weight(1f)
-                    )
-                    ScorePill(
-                        label = "Shops",
-                        score = score.activeFrontage,
-                        icon = Icons.Default.Storefront,
-                        modifier = Modifier.weight(1f)
-                    )
-                    ScorePill(
-                        label = "Clear",
-                        score = 2 - score.obstructions,
-                        icon = Icons.Default.Warning,
-                        modifier = Modifier.weight(1f)
-                    )
-                }
-            }
+            Text(
+                text = "Street View image • visual conditions may have changed.",
+                style = Typography.bodySmall,
+                color = SlateMuted
+            )
 
             // Route Filmstrip (Browse other sample points along this route)
             Text(
@@ -344,51 +265,6 @@ fun StreetViewInspectionSheet(
                     }
                 }
             }
-        }
-    }
-}
-
-@Composable
-private fun ScorePill(
-    label: String,
-    score: Int,
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    modifier: Modifier = Modifier
-) {
-    val (scoreColor, scoreText) = when (score) {
-        2 -> Pair(VerifiedGreen, "Good (2)")
-        1 -> Pair(WarningAmber, "Mod (1)")
-        else -> Pair(EmergencyRose, "Low (0)")
-    }
-
-    Box(
-        modifier = modifier
-            .clip(RoundedCornerShape(10.dp))
-            .background(PureWhiteCard)
-            .border(1.dp, BorderCanvas, RoundedCornerShape(10.dp))
-            .padding(vertical = 8.dp, horizontal = 4.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = scoreColor,
-                modifier = Modifier.size(16.dp)
-            )
-            Text(
-                text = label,
-                style = MonospaceDataSm.copy(fontSize = 9.sp),
-                color = SlateMuted
-            )
-            Text(
-                text = "$score/2",
-                style = MonospaceDataSm.copy(fontWeight = FontWeight.Bold, fontSize = 11.sp),
-                color = scoreColor
-            )
         }
     }
 }

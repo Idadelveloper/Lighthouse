@@ -586,7 +586,7 @@ private fun SafeHavenDetailCard(
                             )
                             Icon(
                                 imageVector = Icons.Default.Verified,
-                                contentDescription = "Verified Haven",
+                                contentDescription = "Storefront candidate",
                                 tint = VerifiedGreen,
                                 modifier = Modifier.size(16.dp)
                             )
@@ -664,7 +664,7 @@ private fun SafeHavenDetailCard(
                         modifier = Modifier.size(18.dp)
                     )
                     Text(
-                        text = "Route to this Safe Haven",
+                        text = "Route to this location",
                         style = Typography.labelMedium.copy(fontWeight = FontWeight.Bold),
                         color = PureWhiteCard
                     )
