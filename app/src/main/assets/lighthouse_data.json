@@ -1,0 +1,4160 @@
+{
+ "generated_at": "2026-09-25T22:26:21.441553+00:00",
+ "features": [
+  "shade",
+  "lighting",
+  "sidewalk",
+  "activity",
+  "clear_path"
+ ],
+ "feature_labels": {
+  "shade": "Shade",
+  "lighting": "Streetlights",
+  "sidewalk": "Sidewalk",
+  "activity": "Open shops",
+  "clear_path": "Clear path"
+ },
+ "weight_presets": {
+  "day": {
+   "shade": 0.4,
+   "lighting": 0.05,
+   "sidewalk": 0.3,
+   "activity": 0.1,
+   "clear_path": 0.15
+  },
+  "night": {
+   "shade": 0.0,
+   "lighting": 0.4,
+   "sidewalk": 0.2,
+   "activity": 0.3,
+   "clear_path": 0.1
+  }
+ },
+ "time_cost_per_min": 0.01,
+ "default_max_extra_min": 6,
+ "min_confidence": 0.3,
+ "legs": {
+  "to_park": {
+   "label": "16th St BART to Dolores Park",
+   "default_time": "day",
+   "origin": {
+    "name": "16th St Mission BART",
+    "lat": 37.76506,
+    "lng": -122.41969
+   },
+   "destination": {
+    "name": "Dolores Park (18th & Dolores)",
+    "lat": 37.76156,
+    "lng": -122.42582
+   },
+   "default_via": "Mission & 18th St",
+   "routes": [
+    {
+     "id": "default",
+     "via": "Mission & 18th St",
+     "duration_s": 797,
+     "distance_m": 925,
+     "path": [
+      [
+       37.76506,
+       -122.4198
+      ],
+      [
+       37.76466,
+       -122.41977
+      ],
+      [
+       37.76443,
+       -122.41976
+      ],
+      [
+       37.76336,
+       -122.41967
+      ],
+      [
+       37.76337,
+       -122.41965
+      ],
+      [
+       37.76268,
+       -122.41959
+      ],
+      [
+       37.76191,
+       -122.41951
+      ],
+      [
+       37.76182,
+       -122.4208
+      ],
+      [
+       37.76184,
+       -122.4208
+      ],
+      [
+       37.76183,
+       -122.4209
+      ],
+      [
+       37.76178,
+       -122.42169
+      ],
+      [
+       37.76177,
+       -122.42168
+      ],
+      [
+       37.76176,
+       -122.42193
+      ],
+      [
+       37.76176,
+       -122.42206
+      ],
+      [
+       37.76174,
+       -122.42239
+      ],
+      [
+       37.76171,
+       -122.42272
+      ],
+      [
+       37.76168,
+       -122.42338
+      ],
+      [
+       37.76166,
+       -122.4235
+      ],
+      [
+       37.76164,
+       -122.42395
+      ],
+      [
+       37.76162,
+       -122.42412
+      ],
+      [
+       37.76163,
+       -122.42425
+      ],
+      [
+       37.76154,
+       -122.42566
+      ],
+      [
+       37.76152,
+       -122.42582
+      ]
+     ],
+     "features": {
+      "shade": 0.385,
+      "lighting": 0.615,
+      "sidewalk": 1.0,
+      "activity": 0.712,
+      "clear_path": 0.885
+     },
+     "coverage": 0.963,
+     "confidence": 0.896,
+     "has_steps": false,
+     "n_images": 26,
+     "weakest": "shade",
+     "oldest_image": "2017-04",
+     "comfort": {
+      "day": 0.689,
+      "night": 0.748
+     },
+     "explanation": {
+      "day": "This 13-minute route via Mission and 18th Street prioritises continuous, clear sidewalks with steady street activity, adding only 0.1 extra minutes compared to the fastest route. However, shade is the lowest-scoring aspect of the walk, so you should expect limited overhead cover from the sun along the way.",
+      "night": "This 13-minute route via Mission & 18th St prioritises continuous sidewalks, clear pathways, and street-level activity, taking just 0.1 extra minutes compared to the fastest route. Along the way you will find reliable sidewalks, moderate lighting, and active storefronts, though shade is the route's lowest-scoring condition."
+     },
+     "samples": [
+      {
+       "lat": 37.76506,
+       "lng": -122.4198,
+       "pano_id": "r639QsyDzXU9vaHgJFy7CQ",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 2,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76466,
+       "lng": -122.41977,
+       "pano_id": "WktoTeZ1va-TLsQOeJWktw",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76443,
+       "lng": -122.41976,
+       "pano_id": "Pjk4jmkKWcAgCMUvHTMWgA",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76336,
+       "lng": -122.41967,
+       "pano_id": "bbO-UP7Z9DxvqQF7H8i5Ng",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 2,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76337,
+       "lng": -122.41965,
+       "pano_id": "jPvIPCaajl4oXEcHlJnc7A",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76268,
+       "lng": -122.41959,
+       "pano_id": "C8jLsiLQIW7-2v3oEiuBFQ",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76191,
+       "lng": -122.41951,
+       "pano_id": "ut8MkJTVeQgygzLi1n6sRw",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 2,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76182,
+       "lng": -122.4208,
+       "pano_id": "ym7TVbODz1yd07xkpvSdQQ",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76184,
+       "lng": -122.4208,
+       "pano_id": "d9y17AjEuOEiUfi8yhhnRQ",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76183,
+       "lng": -122.4209,
+       "pano_id": "VA4h1COf3ZVc-mx1bsOImQ",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 2,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76178,
+       "lng": -122.42169,
+       "pano_id": "oR37JAcfTLmzl2WKHEO7jg",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76177,
+       "lng": -122.42168,
+       "pano_id": "eysV4JArLk1fzwy4lf2F7g",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76176,
+       "lng": -122.42193,
+       "pano_id": "gTJTrAK_nC9uCy15HWOmgA",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 2,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76176,
+       "lng": -122.42206,
+       "pano_id": "NQW3KUpj7CUvoqsKinKCUg",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76174,
+       "lng": -122.42239,
+       "pano_id": "IfGIfH0q_8BgA0jzW1Wxlw",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76171,
+       "lng": -122.42272,
+       "pano_id": "HJh-mx31PIfRchr4HxvEbw",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 2,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76168,
+       "lng": -122.42338,
+       "pano_id": "Asc5tjm838JBHcl6qrsjsw",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76166,
+       "lng": -122.4235,
+       "pano_id": "acj2KAsk2iWCXmWJKMpIWg",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76164,
+       "lng": -122.42395,
+       "pano_id": "r639QsyDzXU9vaHgJFy7CQ",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 2,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76162,
+       "lng": -122.42412,
+       "pano_id": "WktoTeZ1va-TLsQOeJWktw",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76163,
+       "lng": -122.42425,
+       "pano_id": "Pjk4jmkKWcAgCMUvHTMWgA",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76154,
+       "lng": -122.42566,
+       "pano_id": "bbO-UP7Z9DxvqQF7H8i5Ng",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 2,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76152,
+       "lng": -122.42582,
+       "pano_id": "jPvIPCaajl4oXEcHlJnc7A",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      }
+     ]
+    },
+    {
+     "id": "valencia_st",
+     "via": "Valencia St",
+     "duration_s": 793,
+     "distance_m": 928,
+     "path": [
+      [
+       37.76506,
+       -122.4198
+      ],
+      [
+       37.76466,
+       -122.41977
+      ],
+      [
+       37.76443,
+       -122.41976
+      ],
+      [
+       37.76336,
+       -122.41967
+      ],
+      [
+       37.76323,
+       -122.42169
+      ],
+      [
+       37.76323,
+       -122.42185
+      ],
+      [
+       37.76262,
+       -122.42178
+      ],
+      [
+       37.76252,
+       -122.42175
+      ],
+      [
+       37.76248,
+       -122.42176
+      ],
+      [
+       37.76177,
+       -122.42168
+      ],
+      [
+       37.76176,
+       -122.42193
+      ],
+      [
+       37.76176,
+       -122.42206
+      ],
+      [
+       37.76174,
+       -122.42239
+      ],
+      [
+       37.76171,
+       -122.42272
+      ],
+      [
+       37.76168,
+       -122.42338
+      ],
+      [
+       37.76166,
+       -122.4235
+      ],
+      [
+       37.76164,
+       -122.42395
+      ],
+      [
+       37.76162,
+       -122.42412
+      ],
+      [
+       37.76163,
+       -122.42425
+      ],
+      [
+       37.76154,
+       -122.42566
+      ],
+      [
+       37.76152,
+       -122.42582
+      ]
+     ],
+     "features": {
+      "shade": 0.38,
+      "lighting": 0.6,
+      "sidewalk": 1.0,
+      "activity": 0.58,
+      "clear_path": 0.88
+     },
+     "coverage": 0.926,
+     "confidence": 0.894,
+     "has_steps": false,
+     "n_images": 25,
+     "weakest": "shade",
+     "oldest_image": "2017-04",
+     "comfort": {
+      "day": 0.672,
+      "night": 0.702
+     },
+     "explanation": {
+      "day": "This 13-minute walk along Valencia Street prioritises excellent sidewalk quality and clear walking paths, adding zero extra minutes compared to the fastest route. However, shade is the route's lowest-scoring condition with minimal tree cover, though you can expect continuous, well-maintained sidewalks and moderate daytime activity.",
+      "night": "This route along Valencia Street takes zero extra minutes compared to the fastest option and prioritises clear paths with excellent sidewalk quality. While you will find moderate lighting and street activity along the way, shade is the lowest-scoring condition across this stretch."
+     },
+     "samples": [
+      {
+       "lat": 37.76506,
+       "lng": -122.4198,
+       "pano_id": "r639QsyDzXU9vaHgJFy7CQ",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 2,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76466,
+       "lng": -122.41977,
+       "pano_id": "WktoTeZ1va-TLsQOeJWktw",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76443,
+       "lng": -122.41976,
+       "pano_id": "Pjk4jmkKWcAgCMUvHTMWgA",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76336,
+       "lng": -122.41967,
+       "pano_id": "Eb3vjJg-qs6mUwqx0QXXsg",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 2,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76323,
+       "lng": -122.42169,
+       "pano_id": "Jjgx2E6d7-DBXbh8aY8t4g",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76323,
+       "lng": -122.42185,
+       "pano_id": "ap1w3lYNrfCGy5dIf6YA9A",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76262,
+       "lng": -122.42178,
+       "pano_id": "OXotx9Ec66lry5Lc_Fp7lQ",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 2,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76252,
+       "lng": -122.42175,
+       "pano_id": "6D3K8SiHZe7KVcCC8k4hQg",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76248,
+       "lng": -122.42176,
+       "pano_id": "Y9pHwQOU1zkp5qT53X3qZA",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76177,
+       "lng": -122.42168,
+       "pano_id": "P9O4RaVdeM6UEaCvj7Au5g",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 2,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76176,
+       "lng": -122.42193,
+       "pano_id": "6hF_DRetc7Dv8oYx22zDww",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76176,
+       "lng": -122.42206,
+       "pano_id": "Yyo9w86sPT5xaaJVXebHKg",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76174,
+       "lng": -122.42239,
+       "pano_id": "wQkLNOp7Jfx2ZqwVnG_EmQ",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 2,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76171,
+       "lng": -122.42272,
+       "pano_id": "pMVG6QRDQMgZJnwMjElKMw",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76168,
+       "lng": -122.42338,
+       "pano_id": "6WRcoet7qSTiIYMBl33z8Q",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76166,
+       "lng": -122.4235,
+       "pano_id": "NjExE-nohuKz9vuqtdb4gg",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 2,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76164,
+       "lng": -122.42395,
+       "pano_id": "SpOtWiSxSJyhFSH_f-BwxA",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76162,
+       "lng": -122.42412,
+       "pano_id": "vivbuTxjbu_2Yn05mYmkVQ",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76163,
+       "lng": -122.42425,
+       "pano_id": "ksAFHolHHmRpWu4uPTLwjw",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 2,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76154,
+       "lng": -122.42566,
+       "pano_id": "r639QsyDzXU9vaHgJFy7CQ",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76152,
+       "lng": -122.42582,
+       "pano_id": "WktoTeZ1va-TLsQOeJWktw",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      }
+     ]
+    },
+    {
+     "id": "guerrero_st",
+     "via": "Guerrero St",
+     "duration_s": 797,
+     "distance_m": 926,
+     "path": [
+      [
+       37.76506,
+       -122.4198
+      ],
+      [
+       37.76466,
+       -122.41977
+      ],
+      [
+       37.76443,
+       -122.41976
+      ],
+      [
+       37.76336,
+       -122.41967
+      ],
+      [
+       37.76323,
+       -122.42169
+      ],
+      [
+       37.76314,
+       -122.42318
+      ],
+      [
+       37.76312,
+       -122.42385
+      ],
+      [
+       37.76311,
+       -122.42385
+      ],
+      [
+       37.76309,
+       -122.42409
+      ],
+      [
+       37.76241,
+       -122.42403
+      ],
+      [
+       37.76241,
+       -122.42404
+      ],
+      [
+       37.76229,
+       -122.42403
+      ],
+      [
+       37.76229,
+       -122.42401
+      ],
+      [
+       37.76163,
+       -122.42395
+      ],
+      [
+       37.76163,
+       -122.42425
+      ],
+      [
+       37.76154,
+       -122.42566
+      ],
+      [
+       37.76152,
+       -122.42582
+      ]
+     ],
+     "features": {
+      "shade": 0.365,
+      "lighting": 0.615,
+      "sidewalk": 1.0,
+      "activity": 0.538,
+      "clear_path": 0.923
+     },
+     "coverage": 0.963,
+     "confidence": 0.887,
+     "has_steps": false,
+     "n_images": 26,
+     "weakest": "shade",
+     "oldest_image": "2017-04",
+     "comfort": {
+      "day": 0.669,
+      "night": 0.7
+     },
+     "explanation": {
+      "day": "This 13-minute route along Guerrero St prioritises continuous sidewalks and clear walking paths, adding only 0.1 extra minutes compared to the fastest route. However, shade is the lowest-scoring factor along this stretch, so expect minimal protection from the sun.",
+      "night": "This 13-minute walk along Guerrero Street prioritises continuous sidewalks and clear paths, adding only 0.1 extra minutes versus the fastest route. The route features moderate nighttime lighting and some street activity, though shade is the lowest-scoring condition along this stretch."
+     },
+     "samples": [
+      {
+       "lat": 37.76506,
+       "lng": -122.4198,
+       "pano_id": "r639QsyDzXU9vaHgJFy7CQ",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 2,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76466,
+       "lng": -122.41977,
+       "pano_id": "WktoTeZ1va-TLsQOeJWktw",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76443,
+       "lng": -122.41976,
+       "pano_id": "Eb3vjJg-qs6mUwqx0QXXsg",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76336,
+       "lng": -122.41967,
+       "pano_id": "Jjgx2E6d7-DBXbh8aY8t4g",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 2,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76323,
+       "lng": -122.42169,
+       "pano_id": "ap1w3lYNrfCGy5dIf6YA9A",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76314,
+       "lng": -122.42318,
+       "pano_id": "OXotx9Ec66lry5Lc_Fp7lQ",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76312,
+       "lng": -122.42385,
+       "pano_id": "6D3K8SiHZe7KVcCC8k4hQg",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 2,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76311,
+       "lng": -122.42385,
+       "pano_id": "o7qvlVvk3KnDuZ8afTKsuQ",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76309,
+       "lng": -122.42409,
+       "pano_id": "gAIvkpl8YcwwyRU12EUxpQ",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76241,
+       "lng": -122.42403,
+       "pano_id": "u9-PVrH4VdTtYYKzb3NBXg",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 2,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76241,
+       "lng": -122.42404,
+       "pano_id": "7C_43zDRVtkcpibnIo7EZA",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76229,
+       "lng": -122.42403,
+       "pano_id": "ONP6Z1tQgqGrPzncXrnkpQ",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76229,
+       "lng": -122.42401,
+       "pano_id": "H107SbpRlSGjFIXIH-jFkA",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 2,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76163,
+       "lng": -122.42395,
+       "pano_id": "cUWeCvzIAO0WhSrFlsRT0A",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76163,
+       "lng": -122.42425,
+       "pano_id": "Pm5lJTiPMXOAE2pooKksiQ",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76154,
+       "lng": -122.42566,
+       "pano_id": "CeOPV0wzRtjP9fK7rcyYNg",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 2,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76152,
+       "lng": -122.42582,
+       "pano_id": "0M8P5hTyX5j2w7qCpBpL3w",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      }
+     ]
+    },
+    {
+     "id": "dolores_st",
+     "via": "Dolores St",
+     "duration_s": 844,
+     "distance_m": 960,
+     "path": [
+      [
+       37.76514,
+       -122.4197
+      ],
+      [
+       37.76513,
+       -122.41983
+      ],
+      [
+       37.76495,
+       -122.41981
+      ],
+      [
+       37.76492,
+       -122.42037
+      ],
+      [
+       37.76494,
+       -122.4205
+      ],
+      [
+       37.76492,
+       -122.42056
+      ],
+      [
+       37.76491,
+       -122.42066
+      ],
+      [
+       37.76493,
+       -122.42066
+      ],
+      [
+       37.76488,
+       -122.42134
+      ],
+      [
+       37.76488,
+       -122.42147
+      ],
+      [
+       37.76486,
+       -122.42186
+      ],
+      [
+       37.76484,
+       -122.42186
+      ],
+      [
+       37.76483,
+       -122.422
+      ],
+      [
+       37.76484,
+       -122.422
+      ],
+      [
+       37.76472,
+       -122.42388
+      ],
+      [
+       37.76473,
+       -122.424
+      ],
+      [
+       37.76471,
+       -122.424
+      ],
+      [
+       37.7647,
+       -122.42423
+      ],
+      [
+       37.76472,
+       -122.42423
+      ],
+      [
+       37.7647,
+       -122.42459
+      ],
+      [
+       37.76468,
+       -122.42464
+      ],
+      [
+       37.76459,
+       -122.42607
+      ],
+      [
+       37.76437,
+       -122.42606
+      ],
+      [
+       37.76435,
+       -122.42609
+      ],
+      [
+       37.76434,
+       -122.42625
+      ],
+      [
+       37.76311,
+       -122.42613
+      ],
+      [
+       37.76312,
+       -122.42609
+      ],
+      [
+       37.76297,
+       -122.42608
+      ],
+      [
+       37.76297,
+       -122.42612
+      ],
+      [
+       37.76229,
+       -122.42605
+      ],
+      [
+       37.76229,
+       -122.42602
+      ],
+      [
+       37.76217,
+       -122.426
+      ],
+      [
+       37.76217,
+       -122.42603
+      ],
+      [
+       37.76151,
+       -122.42596
+      ],
+      [
+       37.76152,
+       -122.42582
+      ]
+     ],
+     "features": {
+      "shade": 0.404,
+      "lighting": 0.5,
+      "sidewalk": 1.0,
+      "activity": 0.577,
+      "clear_path": 0.923
+     },
+     "coverage": 0.929,
+     "confidence": 0.9,
+     "has_steps": false,
+     "n_images": 26,
+     "weakest": "shade",
+     "oldest_image": "2010-02",
+     "comfort": {
+      "day": 0.683,
+      "night": 0.665
+     },
+     "explanation": {
+      "day": "This route via Dolores Street prioritises clear paths and continuous sidewalks, taking only 0.8 extra minutes compared to the fastest route. Keep in mind that shade is its lowest-scoring condition, meaning you will encounter stretches with limited cover from the sun.",
+      "night": "This route via Dolores Street prioritises clear, continuous sidewalks, adding just 0.8 extra minutes compared to the fastest option. While the walking path itself is completely unobstructed and step-free, shade is the lowest-scoring attribute, and street lighting and nighttime activity along the way are only moderate."
+     },
+     "samples": [
+      {
+       "lat": 37.76514,
+       "lng": -122.4197,
+       "pano_id": "q4iP5bCP5cqD6SnVwC1Vkw",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 2,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76513,
+       "lng": -122.41983,
+       "pano_id": "nmW1712jIk7fTcyojudyqg",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76495,
+       "lng": -122.41981,
+       "pano_id": "0pZ5WwmMop0YDKnWPY181A",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76492,
+       "lng": -122.42037,
+       "pano_id": "fldqqYZoNzICQ8P10XNi_Q",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 2,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76494,
+       "lng": -122.4205,
+       "pano_id": "ZAkJGaj0QKyZgZhoctPQqA",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76492,
+       "lng": -122.42056,
+       "pano_id": "_oWZ7xshs0Z9kAzOc1cEQw",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76491,
+       "lng": -122.42066,
+       "pano_id": "up89nxl0OeMsecBNAlUdQA",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 2,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76493,
+       "lng": -122.42066,
+       "pano_id": "wOnDDLgoUyLHOULwaVUv1w",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76488,
+       "lng": -122.42134,
+       "pano_id": "uMKpRR4gTroUyse_PNbQOg",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76488,
+       "lng": -122.42147,
+       "pano_id": "qiQ0Rb9pyCS51U7gvT_pNw",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 2,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76486,
+       "lng": -122.42186,
+       "pano_id": "v0HG7ddjgXG3iFwN-mmwMw",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76484,
+       "lng": -122.42186,
+       "pano_id": "sZf2QqoR23HfQ33IOXp4bg",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76483,
+       "lng": -122.422,
+       "pano_id": "x_uxbTvHHkCcarOkj90FRg",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 2,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76484,
+       "lng": -122.422,
+       "pano_id": "1LCNBaeqHSUCLQqIq12Nmw",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76472,
+       "lng": -122.42388,
+       "pano_id": "8SEnhHQLsxbPeOhmg65fdA",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76473,
+       "lng": -122.424,
+       "pano_id": "dX1zwEexJ_KhJIgvKj1mmQ",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 2,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76471,
+       "lng": -122.424,
+       "pano_id": "7HSIuX1EXN2DvZFwlQGRKA",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.7647,
+       "lng": -122.42423,
+       "pano_id": "qW2lhVBI84zj-XDF2wE4ow",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76472,
+       "lng": -122.42423,
+       "pano_id": "DEyK4XqUu4SErUe8DNRtjg",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 2,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.7647,
+       "lng": -122.42459,
+       "pano_id": "yGbPmMApiVi8xz0-QUaSMw",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76468,
+       "lng": -122.42464,
+       "pano_id": "ifdZ3wlMCPsUSTW_cJlzNg",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76459,
+       "lng": -122.42607,
+       "pano_id": "it-FBF2o_ci4KlHn00qv1A",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 2,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76437,
+       "lng": -122.42606,
+       "pano_id": "b7eQIMtdo6Xc7EqvwaCLgw",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76435,
+       "lng": -122.42609,
+       "pano_id": "jjpCRfsZJjI8FhLgF4DF9A",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76434,
+       "lng": -122.42625,
+       "pano_id": "5KNvLDJzASDmjgH6Id0fIg",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 2,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76311,
+       "lng": -122.42613,
+       "pano_id": "q4iP5bCP5cqD6SnVwC1Vkw",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76312,
+       "lng": -122.42609,
+       "pano_id": "nmW1712jIk7fTcyojudyqg",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76297,
+       "lng": -122.42608,
+       "pano_id": "0pZ5WwmMop0YDKnWPY181A",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 2,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76297,
+       "lng": -122.42612,
+       "pano_id": "fldqqYZoNzICQ8P10XNi_Q",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76229,
+       "lng": -122.42605,
+       "pano_id": "ZAkJGaj0QKyZgZhoctPQqA",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76229,
+       "lng": -122.42602,
+       "pano_id": "_oWZ7xshs0Z9kAzOc1cEQw",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 2,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76217,
+       "lng": -122.426,
+       "pano_id": "up89nxl0OeMsecBNAlUdQA",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76217,
+       "lng": -122.42603,
+       "pano_id": "wOnDDLgoUyLHOULwaVUv1w",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76151,
+       "lng": -122.42596,
+       "pano_id": "uMKpRR4gTroUyse_PNbQOg",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 2,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76152,
+       "lng": -122.42582,
+       "pano_id": "qiQ0Rb9pyCS51U7gvT_pNw",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "to_bart": {
+   "label": "Dolores Park to 16th St BART",
+   "default_time": "night",
+   "origin": {
+    "name": "Dolores Park (18th & Dolores)",
+    "lat": 37.76156,
+    "lng": -122.42582
+   },
+   "destination": {
+    "name": "16th St Mission BART",
+    "lat": 37.76506,
+    "lng": -122.41969
+   },
+   "default_via": "18th & Mission St",
+   "routes": [
+    {
+     "id": "default",
+     "via": "18th & Mission St",
+     "duration_s": 769,
+     "distance_m": 925,
+     "path": [
+      [
+       37.76152,
+       -122.42582
+      ],
+      [
+       37.76154,
+       -122.42566
+      ],
+      [
+       37.76163,
+       -122.42425
+      ],
+      [
+       37.76162,
+       -122.42412
+      ],
+      [
+       37.76164,
+       -122.42395
+      ],
+      [
+       37.76166,
+       -122.4235
+      ],
+      [
+       37.76168,
+       -122.42338
+      ],
+      [
+       37.76171,
+       -122.42272
+      ],
+      [
+       37.76174,
+       -122.42239
+      ],
+      [
+       37.76176,
+       -122.42206
+      ],
+      [
+       37.76176,
+       -122.42193
+      ],
+      [
+       37.76177,
+       -122.42168
+      ],
+      [
+       37.76178,
+       -122.42169
+      ],
+      [
+       37.76183,
+       -122.4209
+      ],
+      [
+       37.76184,
+       -122.4208
+      ],
+      [
+       37.76182,
+       -122.4208
+      ],
+      [
+       37.76191,
+       -122.41951
+      ],
+      [
+       37.76268,
+       -122.41959
+      ],
+      [
+       37.76337,
+       -122.41965
+      ],
+      [
+       37.76336,
+       -122.41967
+      ],
+      [
+       37.76443,
+       -122.41976
+      ],
+      [
+       37.76466,
+       -122.41977
+      ],
+      [
+       37.76506,
+       -122.4198
+      ]
+     ],
+     "features": {
+      "shade": 0.312,
+      "lighting": 0.604,
+      "sidewalk": 1.0,
+      "activity": 0.625,
+      "clear_path": 0.875
+     },
+     "coverage": 0.923,
+     "confidence": 0.879,
+     "has_steps": false,
+     "n_images": 24,
+     "weakest": "shade",
+     "oldest_image": "2019-06",
+     "comfort": {
+      "day": 0.649,
+      "night": 0.717
+     },
+     "explanation": {
+      "day": "This 13-minute walk via 18th & Mission St prioritises continuous sidewalks and clear paths, taking only 0.1 extra minutes compared to the fastest route.",
+      "night": "This 13-minute night route via 18th & Mission St prioritises clear paths and fully paved sidewalks, taking only 0.1 extra minutes compared to the fastest route."
+     },
+     "samples": [
+      {
+       "lat": 37.76152,
+       "lng": -122.42582,
+       "pano_id": "r639QsyDzXU9vaHgJFy7CQ",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 2,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76154,
+       "lng": -122.42566,
+       "pano_id": "WktoTeZ1va-TLsQOeJWktw",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76163,
+       "lng": -122.42425,
+       "pano_id": "Pjk4jmkKWcAgCMUvHTMWgA",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76162,
+       "lng": -122.42412,
+       "pano_id": "bbO-UP7Z9DxvqQF7H8i5Ng",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 2,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76164,
+       "lng": -122.42395,
+       "pano_id": "jPvIPCaajl4oXEcHlJnc7A",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76166,
+       "lng": -122.4235,
+       "pano_id": "C8jLsiLQIW7-2v3oEiuBFQ",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76168,
+       "lng": -122.42338,
+       "pano_id": "ut8MkJTVeQgygzLi1n6sRw",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 2,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76171,
+       "lng": -122.42272,
+       "pano_id": "ym7TVbODz1yd07xkpvSdQQ",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76174,
+       "lng": -122.42239,
+       "pano_id": "d9y17AjEuOEiUfi8yhhnRQ",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76176,
+       "lng": -122.42206,
+       "pano_id": "VA4h1COf3ZVc-mx1bsOImQ",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 2,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76176,
+       "lng": -122.42193,
+       "pano_id": "oR37JAcfTLmzl2WKHEO7jg",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76177,
+       "lng": -122.42168,
+       "pano_id": "eysV4JArLk1fzwy4lf2F7g",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76178,
+       "lng": -122.42169,
+       "pano_id": "gTJTrAK_nC9uCy15HWOmgA",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 2,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76183,
+       "lng": -122.4209,
+       "pano_id": "NQW3KUpj7CUvoqsKinKCUg",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76184,
+       "lng": -122.4208,
+       "pano_id": "IfGIfH0q_8BgA0jzW1Wxlw",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76182,
+       "lng": -122.4208,
+       "pano_id": "HJh-mx31PIfRchr4HxvEbw",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 2,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76191,
+       "lng": -122.41951,
+       "pano_id": "Asc5tjm838JBHcl6qrsjsw",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76268,
+       "lng": -122.41959,
+       "pano_id": "acj2KAsk2iWCXmWJKMpIWg",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76337,
+       "lng": -122.41965,
+       "pano_id": "r639QsyDzXU9vaHgJFy7CQ",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 2,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76336,
+       "lng": -122.41967,
+       "pano_id": "WktoTeZ1va-TLsQOeJWktw",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76443,
+       "lng": -122.41976,
+       "pano_id": "Pjk4jmkKWcAgCMUvHTMWgA",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76466,
+       "lng": -122.41977,
+       "pano_id": "bbO-UP7Z9DxvqQF7H8i5Ng",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 2,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76506,
+       "lng": -122.4198,
+       "pano_id": "jPvIPCaajl4oXEcHlJnc7A",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      }
+     ]
+    },
+    {
+     "id": "valencia_st",
+     "via": "Valencia St",
+     "duration_s": 765,
+     "distance_m": 928,
+     "path": [
+      [
+       37.76152,
+       -122.42582
+      ],
+      [
+       37.76154,
+       -122.42566
+      ],
+      [
+       37.76163,
+       -122.42425
+      ],
+      [
+       37.76162,
+       -122.42412
+      ],
+      [
+       37.76164,
+       -122.42395
+      ],
+      [
+       37.76166,
+       -122.4235
+      ],
+      [
+       37.76168,
+       -122.42338
+      ],
+      [
+       37.76171,
+       -122.42272
+      ],
+      [
+       37.76174,
+       -122.42239
+      ],
+      [
+       37.76176,
+       -122.42206
+      ],
+      [
+       37.76176,
+       -122.42193
+      ],
+      [
+       37.76177,
+       -122.42168
+      ],
+      [
+       37.76248,
+       -122.42176
+      ],
+      [
+       37.76252,
+       -122.42175
+      ],
+      [
+       37.76262,
+       -122.42178
+      ],
+      [
+       37.76323,
+       -122.42185
+      ],
+      [
+       37.76323,
+       -122.42169
+      ],
+      [
+       37.76336,
+       -122.41967
+      ],
+      [
+       37.76443,
+       -122.41976
+      ],
+      [
+       37.76466,
+       -122.41977
+      ],
+      [
+       37.76506,
+       -122.4198
+      ]
+     ],
+     "features": {
+      "shade": 0.375,
+      "lighting": 0.583,
+      "sidewalk": 1.0,
+      "activity": 0.583,
+      "clear_path": 0.875
+     },
+     "coverage": 0.923,
+     "confidence": 0.892,
+     "has_steps": false,
+     "n_images": 24,
+     "weakest": "shade",
+     "oldest_image": "2017-04",
+     "comfort": {
+      "day": 0.669,
+      "night": 0.696
+     },
+     "explanation": {
+      "day": "This 13-minute route along Valencia Street prioritises continuous sidewalks and clear paths, adding zero extra minutes compared to the fastest option.",
+      "night": "This 13-minute route along Valencia Street prioritises continuous sidewalks and clear paths, adding zero extra minutes compared to the fastest route."
+     },
+     "samples": [
+      {
+       "lat": 37.76152,
+       "lng": -122.42582,
+       "pano_id": "r639QsyDzXU9vaHgJFy7CQ",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 2,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76154,
+       "lng": -122.42566,
+       "pano_id": "WktoTeZ1va-TLsQOeJWktw",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76163,
+       "lng": -122.42425,
+       "pano_id": "Pjk4jmkKWcAgCMUvHTMWgA",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76162,
+       "lng": -122.42412,
+       "pano_id": "Eb3vjJg-qs6mUwqx0QXXsg",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 2,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76164,
+       "lng": -122.42395,
+       "pano_id": "Jjgx2E6d7-DBXbh8aY8t4g",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76166,
+       "lng": -122.4235,
+       "pano_id": "ap1w3lYNrfCGy5dIf6YA9A",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76168,
+       "lng": -122.42338,
+       "pano_id": "OXotx9Ec66lry5Lc_Fp7lQ",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 2,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76171,
+       "lng": -122.42272,
+       "pano_id": "6D3K8SiHZe7KVcCC8k4hQg",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76174,
+       "lng": -122.42239,
+       "pano_id": "Y9pHwQOU1zkp5qT53X3qZA",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76176,
+       "lng": -122.42206,
+       "pano_id": "P9O4RaVdeM6UEaCvj7Au5g",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 2,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76176,
+       "lng": -122.42193,
+       "pano_id": "6hF_DRetc7Dv8oYx22zDww",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76177,
+       "lng": -122.42168,
+       "pano_id": "Yyo9w86sPT5xaaJVXebHKg",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76248,
+       "lng": -122.42176,
+       "pano_id": "wQkLNOp7Jfx2ZqwVnG_EmQ",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 2,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76252,
+       "lng": -122.42175,
+       "pano_id": "pMVG6QRDQMgZJnwMjElKMw",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76262,
+       "lng": -122.42178,
+       "pano_id": "6WRcoet7qSTiIYMBl33z8Q",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76323,
+       "lng": -122.42185,
+       "pano_id": "NjExE-nohuKz9vuqtdb4gg",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 2,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76323,
+       "lng": -122.42169,
+       "pano_id": "SpOtWiSxSJyhFSH_f-BwxA",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76336,
+       "lng": -122.41967,
+       "pano_id": "vivbuTxjbu_2Yn05mYmkVQ",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76443,
+       "lng": -122.41976,
+       "pano_id": "ksAFHolHHmRpWu4uPTLwjw",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 2,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76466,
+       "lng": -122.41977,
+       "pano_id": "r639QsyDzXU9vaHgJFy7CQ",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76506,
+       "lng": -122.4198,
+       "pano_id": "WktoTeZ1va-TLsQOeJWktw",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      }
+     ]
+    },
+    {
+     "id": "guerrero_st",
+     "via": "Guerrero St",
+     "duration_s": 776,
+     "distance_m": 925,
+     "path": [
+      [
+       37.76152,
+       -122.42582
+      ],
+      [
+       37.76154,
+       -122.42566
+      ],
+      [
+       37.76163,
+       -122.42425
+      ],
+      [
+       37.76163,
+       -122.42395
+      ],
+      [
+       37.76229,
+       -122.42401
+      ],
+      [
+       37.76229,
+       -122.42403
+      ],
+      [
+       37.76241,
+       -122.42404
+      ],
+      [
+       37.76241,
+       -122.42403
+      ],
+      [
+       37.76309,
+       -122.42409
+      ],
+      [
+       37.76311,
+       -122.42385
+      ],
+      [
+       37.76312,
+       -122.42385
+      ],
+      [
+       37.76314,
+       -122.42318
+      ],
+      [
+       37.76323,
+       -122.42169
+      ],
+      [
+       37.76336,
+       -122.41967
+      ],
+      [
+       37.76443,
+       -122.41976
+      ],
+      [
+       37.76466,
+       -122.41977
+      ],
+      [
+       37.76506,
+       -122.4198
+      ]
+     ],
+     "features": {
+      "shade": 0.375,
+      "lighting": 0.542,
+      "sidewalk": 1.0,
+      "activity": 0.542,
+      "clear_path": 0.896
+     },
+     "coverage": 0.889,
+     "confidence": 0.887,
+     "has_steps": false,
+     "n_images": 24,
+     "weakest": "shade",
+     "oldest_image": "2012-03",
+     "comfort": {
+      "day": 0.666,
+      "night": 0.669
+     },
+     "explanation": {
+      "day": "This route along Guerrero Street prioritises continuous sidewalks and clear paths, adding just 0.2 extra minutes compared to the fastest route.",
+      "night": "This 13-minute night walk along Guerrero Street prioritises continuous sidewalks and a clear path, adding just 0.2 extra minutes compared to the fastest route."
+     },
+     "samples": [
+      {
+       "lat": 37.76152,
+       "lng": -122.42582,
+       "pano_id": "r639QsyDzXU9vaHgJFy7CQ",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 2,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76154,
+       "lng": -122.42566,
+       "pano_id": "WktoTeZ1va-TLsQOeJWktw",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76163,
+       "lng": -122.42425,
+       "pano_id": "Eb3vjJg-qs6mUwqx0QXXsg",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76163,
+       "lng": -122.42395,
+       "pano_id": "Jjgx2E6d7-DBXbh8aY8t4g",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 2,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76229,
+       "lng": -122.42401,
+       "pano_id": "ap1w3lYNrfCGy5dIf6YA9A",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76229,
+       "lng": -122.42403,
+       "pano_id": "OXotx9Ec66lry5Lc_Fp7lQ",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76241,
+       "lng": -122.42404,
+       "pano_id": "6D3K8SiHZe7KVcCC8k4hQg",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 2,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76241,
+       "lng": -122.42403,
+       "pano_id": "o7qvlVvk3KnDuZ8afTKsuQ",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76309,
+       "lng": -122.42409,
+       "pano_id": "gAIvkpl8YcwwyRU12EUxpQ",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76311,
+       "lng": -122.42385,
+       "pano_id": "u9-PVrH4VdTtYYKzb3NBXg",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 2,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76312,
+       "lng": -122.42385,
+       "pano_id": "7C_43zDRVtkcpibnIo7EZA",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76314,
+       "lng": -122.42318,
+       "pano_id": "ONP6Z1tQgqGrPzncXrnkpQ",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76323,
+       "lng": -122.42169,
+       "pano_id": "H107SbpRlSGjFIXIH-jFkA",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 2,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76336,
+       "lng": -122.41967,
+       "pano_id": "cUWeCvzIAO0WhSrFlsRT0A",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76443,
+       "lng": -122.41976,
+       "pano_id": "Pm5lJTiPMXOAE2pooKksiQ",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76466,
+       "lng": -122.41977,
+       "pano_id": "CeOPV0wzRtjP9fK7rcyYNg",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 2,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76506,
+       "lng": -122.4198,
+       "pano_id": "0M8P5hTyX5j2w7qCpBpL3w",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      }
+     ]
+    },
+    {
+     "id": "dolores_st",
+     "via": "Dolores St",
+     "duration_s": 815,
+     "distance_m": 960,
+     "path": [
+      [
+       37.76152,
+       -122.42582
+      ],
+      [
+       37.76151,
+       -122.42596
+      ],
+      [
+       37.76217,
+       -122.42603
+      ],
+      [
+       37.76217,
+       -122.426
+      ],
+      [
+       37.76229,
+       -122.42602
+      ],
+      [
+       37.76229,
+       -122.42605
+      ],
+      [
+       37.76297,
+       -122.42612
+      ],
+      [
+       37.76297,
+       -122.42608
+      ],
+      [
+       37.76312,
+       -122.42609
+      ],
+      [
+       37.76311,
+       -122.42613
+      ],
+      [
+       37.76434,
+       -122.42625
+      ],
+      [
+       37.76435,
+       -122.42609
+      ],
+      [
+       37.76437,
+       -122.42606
+      ],
+      [
+       37.76459,
+       -122.42607
+      ],
+      [
+       37.76468,
+       -122.42464
+      ],
+      [
+       37.7647,
+       -122.42459
+      ],
+      [
+       37.76472,
+       -122.42423
+      ],
+      [
+       37.7647,
+       -122.42423
+      ],
+      [
+       37.76471,
+       -122.424
+      ],
+      [
+       37.76473,
+       -122.424
+      ],
+      [
+       37.76472,
+       -122.42388
+      ],
+      [
+       37.76484,
+       -122.422
+      ],
+      [
+       37.76483,
+       -122.422
+      ],
+      [
+       37.76484,
+       -122.42186
+      ],
+      [
+       37.76486,
+       -122.42186
+      ],
+      [
+       37.76488,
+       -122.42147
+      ],
+      [
+       37.76488,
+       -122.42134
+      ],
+      [
+       37.76493,
+       -122.42066
+      ],
+      [
+       37.76491,
+       -122.42066
+      ],
+      [
+       37.76492,
+       -122.42056
+      ],
+      [
+       37.76494,
+       -122.4205
+      ],
+      [
+       37.76492,
+       -122.42037
+      ],
+      [
+       37.76495,
+       -122.41981
+      ],
+      [
+       37.76513,
+       -122.41983
+      ],
+      [
+       37.76514,
+       -122.4197
+      ]
+     ],
+     "features": {
+      "shade": 0.42,
+      "lighting": 0.5,
+      "sidewalk": 1.0,
+      "activity": 0.56,
+      "clear_path": 0.94
+     },
+     "coverage": 0.893,
+     "confidence": 0.898,
+     "has_steps": false,
+     "n_images": 25,
+     "weakest": "shade",
+     "oldest_image": "2010-02",
+     "comfort": {
+      "day": 0.69,
+      "night": 0.662
+     },
+     "explanation": {
+      "day": "This 14-minute route via Dolores Street prioritises continuous sidewalks and clear paths, taking only 0.8 extra minutes compared to the fastest route.",
+      "night": "This route via Dolores Street prioritises reliable sidewalks and unobstructed paths, taking just 0.8 extra minutes compared to the fastest route."
+     },
+     "samples": [
+      {
+       "lat": 37.76152,
+       "lng": -122.42582,
+       "pano_id": "q4iP5bCP5cqD6SnVwC1Vkw",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 2,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76151,
+       "lng": -122.42596,
+       "pano_id": "nmW1712jIk7fTcyojudyqg",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76217,
+       "lng": -122.42603,
+       "pano_id": "0pZ5WwmMop0YDKnWPY181A",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76217,
+       "lng": -122.426,
+       "pano_id": "fldqqYZoNzICQ8P10XNi_Q",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 2,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76229,
+       "lng": -122.42602,
+       "pano_id": "ZAkJGaj0QKyZgZhoctPQqA",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76229,
+       "lng": -122.42605,
+       "pano_id": "_oWZ7xshs0Z9kAzOc1cEQw",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76297,
+       "lng": -122.42612,
+       "pano_id": "up89nxl0OeMsecBNAlUdQA",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 2,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76297,
+       "lng": -122.42608,
+       "pano_id": "wOnDDLgoUyLHOULwaVUv1w",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76312,
+       "lng": -122.42609,
+       "pano_id": "uMKpRR4gTroUyse_PNbQOg",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76311,
+       "lng": -122.42613,
+       "pano_id": "qiQ0Rb9pyCS51U7gvT_pNw",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 2,
+        "active_frontage": 2,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76434,
+       "lng": -122.42625,
+       "pano_id": "v0HG7ddjgXG3iFwN-mmwMw",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76435,
+       "lng": -122.42609,
+       "pano_id": "sZf2QqoR23HfQ33IOXp4bg",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76437,
+       "lng": -122.42606,
+       "pano_id": "x_uxbTvHHkCcarOkj90FRg",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 2,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76459,
+       "lng": -122.42607,
+       "pano_id": "1LCNBaeqHSUCLQqIq12Nmw",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76468,
+       "lng": -122.42464,
+       "pano_id": "8SEnhHQLsxbPeOhmg65fdA",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.7647,
+       "lng": -122.42459,
+       "pano_id": "dX1zwEexJ_KhJIgvKj1mmQ",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 2,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76472,
+       "lng": -122.42423,
+       "pano_id": "7HSIuX1EXN2DvZFwlQGRKA",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.7647,
+       "lng": -122.42423,
+       "pano_id": "qW2lhVBI84zj-XDF2wE4ow",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76471,
+       "lng": -122.424,
+       "pano_id": "DEyK4XqUu4SErUe8DNRtjg",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 2,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76473,
+       "lng": -122.424,
+       "pano_id": "yGbPmMApiVi8xz0-QUaSMw",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76472,
+       "lng": -122.42388,
+       "pano_id": "ifdZ3wlMCPsUSTW_cJlzNg",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76484,
+       "lng": -122.422,
+       "pano_id": "it-FBF2o_ci4KlHn00qv1A",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 2,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76483,
+       "lng": -122.422,
+       "pano_id": "b7eQIMtdo6Xc7EqvwaCLgw",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76484,
+       "lng": -122.42186,
+       "pano_id": "jjpCRfsZJjI8FhLgF4DF9A",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76486,
+       "lng": -122.42186,
+       "pano_id": "5KNvLDJzASDmjgH6Id0fIg",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 2,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76488,
+       "lng": -122.42147,
+       "pano_id": "q4iP5bCP5cqD6SnVwC1Vkw",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76488,
+       "lng": -122.42134,
+       "pano_id": "nmW1712jIk7fTcyojudyqg",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76493,
+       "lng": -122.42066,
+       "pano_id": "0pZ5WwmMop0YDKnWPY181A",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 2,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76491,
+       "lng": -122.42066,
+       "pano_id": "fldqqYZoNzICQ8P10XNi_Q",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76492,
+       "lng": -122.42056,
+       "pano_id": "ZAkJGaj0QKyZgZhoctPQqA",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76494,
+       "lng": -122.4205,
+       "pano_id": "_oWZ7xshs0Z9kAzOc1cEQw",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 2,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76492,
+       "lng": -122.42037,
+       "pano_id": "up89nxl0OeMsecBNAlUdQA",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76495,
+       "lng": -122.41981,
+       "pano_id": "wOnDDLgoUyLHOULwaVUv1w",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76513,
+       "lng": -122.41983,
+       "pano_id": "uMKpRR4gTroUyse_PNbQOg",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 1,
+        "tree_shade": 2,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      },
+      {
+       "lat": 37.76514,
+       "lng": -122.4197,
+       "pano_id": "qiQ0Rb9pyCS51U7gvT_pNw",
+       "image_date": "2025-03",
+       "score": {
+        "sidewalk": 2,
+        "streetlights": 2,
+        "tree_shade": 1,
+        "active_frontage": 1,
+        "obstructions": 0,
+        "steps_or_steep": false,
+        "confidence": 0.92,
+        "note": "Continuous paved sidewalk with clear walking conditions and active storefronts."
+       }
+      }
+     ]
+    }
+   ]
+  }
+ }
+}
