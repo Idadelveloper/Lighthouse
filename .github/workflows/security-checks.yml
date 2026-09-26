@@ -1,0 +1,23 @@
+name: Source security checks
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  source-security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install ripgrep
+        run: sudo apt-get update && sudo apt-get install -y ripgrep
+      - name: Verify scanner redaction and detection
+        run: ./scripts/security/test_secret_scan.sh
+      - name: Check client credential boundary
+        run: ./scripts/security/test_android_secret_boundary.sh
+      - name: Check App Check source configuration
+        run: ./scripts/security/test_firebase_security_config.sh
+      - name: Scan working tree and Git history
+        run: ./scripts/security/secret_scan.sh --all

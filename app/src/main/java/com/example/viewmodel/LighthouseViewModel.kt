@@ -87,6 +87,11 @@ class LighthouseViewModel(application: Application) : AndroidViewModel(applicati
             showToast("Hey Lighthouse detected!")
             vibratePhone(40)
         }
+        audioEngine.onModelTranscriptReceived = { modelTranscript ->
+            if (modelTranscript.isNotBlank()) {
+                _geminiLiveVoiceResponse.value = modelTranscript
+            }
+        }
     }
 
     // Gemini Live Audio Conversation States
@@ -94,8 +99,10 @@ class LighthouseViewModel(application: Application) : AndroidViewModel(applicati
     val isLiveVoiceOverlayVisible: StateFlow<Boolean> = _isLiveVoiceOverlayVisible.asStateFlow()
 
     val liveSpeechTranscript: StateFlow<String> = audioEngine.liveTranscript
+    val liveModelOutputTranscript: StateFlow<String> = audioEngine.modelOutputTranscript
     val audioSessionState: StateFlow<com.example.service.AudioSessionState> = audioEngine.sessionState
     val audioRms: StateFlow<Float> = audioEngine.audioRms
+    val liveStatusMessage: StateFlow<String> = audioEngine.statusMessage
 
     private val _geminiLiveVoiceResponse = MutableStateFlow(
         "I am your Gemini Live safety companion. Say \"Hey Lighthouse\" or ask for safe routes, turns, or havens."
@@ -817,6 +824,8 @@ class LighthouseViewModel(application: Application) : AndroidViewModel(applicati
             val activeRouteId = if (_dayNightMode.value == DayNightMode.DAY) _selectedDayRouteId.value else _selectedNightRouteId.value
             val activeRoute = currentRoutes.find { it.id == activeRouteId }
 
+            // Feed user utterance to existing deterministic GeminiSafetyCompanion solely for explicit route actions.
+            // Free-form model output never mutates the route directly.
             val response = geminiCompanion.converseWithLive(
                 userQuery = spokenQuery,
                 currentOrigin = _originName.value,
@@ -828,7 +837,10 @@ class LighthouseViewModel(application: Application) : AndroidViewModel(applicati
                 caloriesBurned = _walkCalories.value
             )
 
-            _geminiLiveVoiceResponse.value = response.spokenText
+            // If Gemini Live output transcript is empty or in offline fallback mode, show the grounded response
+            if (audioEngine.modelOutputTranscript.value.isBlank()) {
+                _geminiLiveVoiceResponse.value = response.spokenText
+            }
             _isGeminiThinking.value = false
 
             // Execute structured conversational action
@@ -877,8 +889,6 @@ class LighthouseViewModel(application: Application) : AndroidViewModel(applicati
                 com.example.service.GeminiAction.NONE -> {}
             }
 
-            // Speak out the guidance into earbuds/speaker
-            audioEngine.speak(response.spokenText)
             vibratePhone(60)
         }
     }

@@ -1,20 +1,35 @@
 package com.example.service
 
+import android.Manifest
 import android.content.Context
-import android.content.Intent
-import android.os.Bundle
-import android.speech.RecognitionListener
-import android.speech.RecognizerIntent
-import android.speech.SpeechRecognizer
-import android.speech.tts.TextToSpeech
-import android.speech.tts.UtteranceProgressListener
+import android.content.pm.PackageManager
+import androidx.core.content.ContextCompat
+import com.google.firebase.Firebase
+import com.google.firebase.FirebaseApp
+import com.google.firebase.ai.ai
+import com.google.firebase.ai.type.AudioTranscriptionConfig
+import com.google.firebase.ai.type.Content
+import com.google.firebase.ai.type.GenerativeBackend
+import com.google.firebase.ai.type.LiveAudioConversationConfig
+import com.google.firebase.ai.type.LiveGenerationConfig
+import com.google.firebase.ai.type.LiveSession
+import com.google.firebase.ai.type.Part
+import com.google.firebase.ai.type.PublicPreviewAPI
+import com.google.firebase.ai.type.ResponseModality
+import com.google.firebase.ai.type.SpeechConfig
+import com.google.firebase.ai.type.TextPart
+import com.google.firebase.ai.type.Voice
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.util.Locale
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 
 enum class AudioSessionState {
     IDLE,
@@ -24,14 +39,41 @@ enum class AudioSessionState {
     ERROR
 }
 
+/**
+ * Gemini Live Audio Engine using official Firebase AI Logic Live API.
+ *
+ * Requirements:
+ * - Model: gemini-3.1-flash-live-preview
+ * - Backend: GenerativeBackend.googleAI()
+ * - Voice: Warm female "Sulafat"
+ * - Modalities: Audio response, bidirectional audio conversation with input & output transcription.
+ * - Anti-snatch / fail-closed design: No client secrets, no SpeechRecognizer/TextToSpeech duplicates.
+ * - Safe session lifecycle: Every stop, release, failed reconnect, and new start closes the prior session
+ *   with the official LiveSession close API. Cleanup is idempotent and coroutine-safe.
+ * - Fragment accumulation: Streamed input fragments accumulate into a complete utterance, debounce,
+ *   dispatch exactly once, and clear the input buffer. Output fragments accumulate for complete spoken
+ *   display and reset at turn boundaries.
+ * - Documented Kotlin incremental-content API: send(content(role = "user") { ... }, endOfTurn = true)
+ *   via Content("user", listOf(TextPart(announcementText))) and turnComplete=true.
+ */
+@OptIn(PublicPreviewAPI::class)
 class GeminiLiveAudioEngine(
     private val context: Context,
     private val coroutineScope: CoroutineScope
 ) {
-    private var speechRecognizer: SpeechRecognizer? = null
-    private var textToSpeech: TextToSpeech? = null
-    private var isTtsReady = false
-    private var isSessionActive = false
+    companion object {
+        const val LIVE_MODEL_NAME = "gemini-3.1-flash-live-preview"
+        const val LIVE_VOICE_NAME = "Sulafat"
+        private const val INPUT_DEBOUNCE_MS = 650L
+
+        const val SYSTEM_INSTRUCTION =
+            "You are Lighthouse, a calm audio walking companion for pedestrians walking along the 16th St Mission BART " +
+            "to Mission Dolores Park corridor in San Francisco. Keep replies to one or two warm, concise sentences suitable for spoken audio. " +
+            "Never guarantee safety. Distinguish reported and current conditions from static infrastructure inventory: " +
+            "SFPUC light pole inventory is not proof that a lamp currently works, and 311 municipal reports are not exhaustive. " +
+            "Always ask before suggesting a route change. Never infer danger from protected class, housing status, wealth, or neighborhood identity. " +
+            "In emergencies, defer immediately to 911 and user-controlled trusted contacts."
+    }
 
     private val _sessionState = MutableStateFlow(AudioSessionState.IDLE)
     val sessionState: StateFlow<AudioSessionState> = _sessionState.asStateFlow()
@@ -39,126 +81,38 @@ class GeminiLiveAudioEngine(
     private val _liveTranscript = MutableStateFlow("")
     val liveTranscript: StateFlow<String> = _liveTranscript.asStateFlow()
 
+    private val _modelOutputTranscript = MutableStateFlow("")
+    val modelOutputTranscript: StateFlow<String> = _modelOutputTranscript.asStateFlow()
+
     private val _audioRms = MutableStateFlow(0f)
     val audioRms: StateFlow<Float> = _audioRms.asStateFlow()
 
+    private val _statusMessage = MutableStateFlow("")
+    val statusMessage: StateFlow<String> = _statusMessage.asStateFlow()
+
     var onUserQueryRecognized: ((String) -> Unit)? = null
     var onWakeWordDetected: (() -> Unit)? = null
+    var onModelTranscriptReceived: ((String) -> Unit)? = null
 
-    init {
-        initializeTts()
-    }
+    private var activeSession: LiveSession? = null
+    private val sessionMutex = Mutex()
+    private var sessionJob: Job? = null
+    private var inputDebounceJob: Job? = null
 
-    private fun initializeTts() {
-        textToSpeech = TextToSpeech(context) { status ->
-            if (status == TextToSpeech.SUCCESS) {
-                textToSpeech?.language = Locale.US
-                textToSpeech?.setPitch(1.02f)
-                textToSpeech?.setSpeechRate(0.96f) // Slightly slower, calm cadence
-                isTtsReady = true
-
-                textToSpeech?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
-                    override fun onStart(utteranceId: String?) {
-                        _sessionState.value = AudioSessionState.SPEAKING
-                    }
-
-                    override fun onDone(utteranceId: String?) {
-                        // After speaking completes, if the continuous session is active, automatically listen again
-                        if (isSessionActive) {
-                            coroutineScope.launch(Dispatchers.Main) {
-                                kotlinx.coroutines.delay(350)
-                                if (isSessionActive) {
-                                    startListeningInternal()
-                                } else {
-                                    _sessionState.value = AudioSessionState.IDLE
-                                }
-                            }
-                        } else {
-                            _sessionState.value = AudioSessionState.IDLE
-                        }
-                    }
-
-                    override fun onError(utteranceId: String?) {
-                        if (isSessionActive) {
-                            coroutineScope.launch(Dispatchers.Main) {
-                                kotlinx.coroutines.delay(300)
-                                if (isSessionActive) startListeningInternal()
-                            }
-                        } else {
-                            _sessionState.value = AudioSessionState.IDLE
-                        }
-                    }
-                })
-            }
-        }
-    }
+    // Fragment accumulators for streamed transcription
+    private val inputAccumulator = StringBuilder()
+    private val outputAccumulator = StringBuilder()
 
     fun startListening() {
-        isSessionActive = true
-        startListeningInternal()
-    }
-
-    private fun startListeningInternal() {
-        coroutineScope.launch(Dispatchers.Main) {
-            stopSpeaking()
-
-            if (!SpeechRecognizer.isRecognitionAvailable(context)) {
-                _sessionState.value = AudioSessionState.ERROR
-                return@launch
-            }
-
-            try {
-                if (speechRecognizer == null) {
-                    speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context).apply {
-                        setRecognitionListener(createRecognitionListener())
-                    }
-                }
-
-                val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
-                    putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-                    putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.US.toString())
-                    putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
-                    putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3)
-                }
-
-                _liveTranscript.value = "Listening hands-free..."
-                _sessionState.value = AudioSessionState.LISTENING
-                speechRecognizer?.startListening(intent)
-            } catch (e: Exception) {
-                _sessionState.value = AudioSessionState.ERROR
-            }
-        }
+        startLiveSession()
     }
 
     fun stopListening() {
-        isSessionActive = false
-        coroutineScope.launch(Dispatchers.Main) {
-            try {
-                speechRecognizer?.stopListening()
-            } catch (_: Exception) {}
-            if (_sessionState.value == AudioSessionState.LISTENING) {
-                _sessionState.value = AudioSessionState.IDLE
-            }
-        }
-    }
-
-    fun speak(text: String, onDone: (() -> Unit)? = null) {
-        if (!isTtsReady || text.isBlank()) return
-
-        coroutineScope.launch(Dispatchers.Main) {
-            _sessionState.value = AudioSessionState.SPEAKING
-            val utteranceId = "gemini_live_${System.currentTimeMillis()}"
-            textToSpeech?.speak(text, TextToSpeech.QUEUE_FLUSH, null, utteranceId)
-        }
+        stopLiveSession()
     }
 
     fun stopSpeaking() {
-        try {
-            textToSpeech?.stop()
-        } catch (_: Exception) {}
-        if (_sessionState.value == AudioSessionState.SPEAKING) {
-            _sessionState.value = AudioSessionState.IDLE
-        }
+        stopLiveSession()
     }
 
     fun setProcessing() {
@@ -169,96 +123,219 @@ class GeminiLiveAudioEngine(
         _sessionState.value = AudioSessionState.IDLE
     }
 
-    fun isContinuousSessionActive(): Boolean = isSessionActive
+    fun startLiveSession() {
+        sessionJob?.cancel()
+        sessionJob = coroutineScope.launch {
+            // Idempotently close and clean up any prior session before starting a new one
+            cleanUpSession()
 
-    private fun createRecognitionListener() = object : RecognitionListener {
-        override fun onReadyForSpeech(params: Bundle?) {
-            _sessionState.value = AudioSessionState.LISTENING
-            _liveTranscript.value = "Listening hands-free..."
-        }
+            // Check microphone permission
+            val hasMicPermission = ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.RECORD_AUDIO
+            ) == PackageManager.PERMISSION_GRANTED
 
-        override fun onBeginningOfSpeech() {
-            _sessionState.value = AudioSessionState.LISTENING
-        }
+            if (!hasMicPermission) {
+                _sessionState.value = AudioSessionState.ERROR
+                _statusMessage.value = "Microphone permission required for Gemini Live audio."
+                return@launch
+            }
 
-        override fun onRmsChanged(rmsdB: Float) {
-            // Normalize rmsdB (-2 to 10 typical) to 0.0 .. 1.0 for waveform
-            val normalized = ((rmsdB + 2f) / 12f).coerceIn(0.05f, 1f)
-            _audioRms.value = normalized
-        }
+            // Verify FirebaseApp availability
+            val app = try {
+                FirebaseApp.getInstance()
+            } catch (_: Exception) {
+                null
+            }
 
-        override fun onBufferReceived(buffer: ByteArray?) {}
+            if (app == null) {
+                _sessionState.value = AudioSessionState.ERROR
+                _statusMessage.value = "Firebase AI Logic Live requires project configuration. Offline fallback active."
+                return@launch
+            }
 
-        override fun onEndOfSpeech() {
-            _sessionState.value = AudioSessionState.PROCESSING
-        }
+            try {
+                _sessionState.value = AudioSessionState.PROCESSING
+                _statusMessage.value = "Connecting to Gemini Live..."
 
-        override fun onError(error: Int) {
-            // If continuous session is active and error is due to silence / no match, auto-rearm
-            if (isSessionActive && (error == SpeechRecognizer.ERROR_NO_MATCH || error == SpeechRecognizer.ERROR_SPEECH_TIMEOUT)) {
-                coroutineScope.launch(Dispatchers.Main) {
-                    kotlinx.coroutines.delay(400)
-                    if (isSessionActive) {
-                        startListeningInternal()
-                    }
+                val liveConfig = LiveGenerationConfig.Builder().apply {
+                    temperature = 0.4f
+                    responseModality = ResponseModality.AUDIO
+                    speechConfig = SpeechConfig(Voice(LIVE_VOICE_NAME))
+                    inputAudioTranscription = AudioTranscriptionConfig()
+                    outputAudioTranscription = AudioTranscriptionConfig()
+                }.build()
+
+                val systemInstructionContent = Content("system", listOf<Part>(TextPart(SYSTEM_INSTRUCTION)))
+
+                val aiClient = Firebase.ai(app = app, backend = GenerativeBackend.googleAI())
+                val liveModel = aiClient.liveModel(
+                    modelName = LIVE_MODEL_NAME,
+                    generationConfig = liveConfig,
+                    systemInstruction = systemInstructionContent
+                )
+
+                val session = liveModel.connect()
+                sessionMutex.withLock {
+                    activeSession = session
                 }
-            } else {
-                _sessionState.value = AudioSessionState.IDLE
+
+                _sessionState.value = AudioSessionState.LISTENING
+                _statusMessage.value = "Connected to Gemini Live (Sulafat)"
+
+                // Reset transcription buffers for the new session
+                withContext(Dispatchers.Main) {
+                    resetInputBuffer()
+                    resetOutputBuffer()
+                }
+
+                // Bidirectional audio conversation with input and output transcriptions.
+                // Do not launch a secondary stream listener flow to avoid socket conflict.
+                val audioConfig = LiveAudioConversationConfig.Builder().apply {
+                    setTranscriptHandler { inTranscription, outTranscription ->
+                        handleTranscriptions(inTranscription?.text, outTranscription?.text)
+                    }
+                }.build()
+
+                session.startAudioConversation(audioConfig)
+            } catch (e: Exception) {
+                // Fail closed cleanly without leaking secrets, tokens, or exceptions to logs
+                _sessionState.value = AudioSessionState.ERROR
+                _statusMessage.value = "Live connection unavailable. Using offline safety fallback."
+                cleanUpSession()
             }
         }
+    }
 
-        override fun onResults(results: Bundle?) {
-            val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-            val query = matches?.firstOrNull() ?: ""
-
-            if (query.isNotBlank()) {
-                _liveTranscript.value = query
-                processRecognizedSpeech(query)
-            } else {
-                if (isSessionActive) {
-                    coroutineScope.launch(Dispatchers.Main) {
-                        kotlinx.coroutines.delay(300)
-                        if (isSessionActive) startListeningInternal()
-                    }
-                } else {
-                    _sessionState.value = AudioSessionState.IDLE
-                }
+    private fun handleTranscriptions(inputText: String?, outputText: String?) {
+        coroutineScope.launch(Dispatchers.Main) {
+            // 1. Process output transcription from model
+            // Streamed fragments are accumulated so the UI displays the complete spoken model response.
+            if (!outputText.isNullOrBlank()) {
+                // If a user utterance was recently processed and we transition back to speaking,
+                // ensure we accumulate for the active model turn.
+                _sessionState.value = AudioSessionState.SPEAKING
+                outputAccumulator.append(outputText)
+                val fullSpokenText = outputAccumulator.toString()
+                _modelOutputTranscript.value = fullSpokenText
+                onModelTranscriptReceived?.invoke(fullSpokenText)
             }
-        }
 
-        override fun onPartialResults(partialResults: Bundle?) {
-            val partialMatches = partialResults?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-            val partialText = partialMatches?.firstOrNull() ?: ""
-            if (partialText.isNotBlank()) {
-                _liveTranscript.value = partialText
+            // 2. Process user input transcription fragments
+            // Accumulate input fragments into a complete utterance, debounce, dispatch exactly once,
+            // then clear the input buffer.
+            if (!inputText.isNullOrBlank()) {
+                _sessionState.value = AudioSessionState.LISTENING
+                // If starting a new user turn while previous output is displayed, reset output accumulator
+                // so the upcoming model response starts fresh.
+                if (outputAccumulator.isNotEmpty()) {
+                    resetOutputBuffer()
+                }
 
-                // Real-time wake word check
-                if (partialText.contains("hey lighthouse", ignoreCase = true) ||
-                    partialText.contains("lighthouse", ignoreCase = true)
+                inputAccumulator.append(inputText)
+                val currentAccumulation = inputAccumulator.toString()
+                _liveTranscript.value = currentAccumulation
+
+                // Check wake word if uttered
+                if (currentAccumulation.contains("hey lighthouse", ignoreCase = true) ||
+                    currentAccumulation.contains("lighthouse", ignoreCase = true)
                 ) {
                     onWakeWordDetected?.invoke()
                 }
+
+                // Debounce into one final complete user utterance before feeding to deterministic action runner
+                inputDebounceJob?.cancel()
+                inputDebounceJob = coroutineScope.launch {
+                    delay(INPUT_DEBOUNCE_MS)
+                    val finalUtterance = inputAccumulator.toString().trim()
+                    if (finalUtterance.isNotBlank()) {
+                        val cleanQuery = finalUtterance
+                            .replace("hey lighthouse", "", ignoreCase = true)
+                            .replace("lighthouse", "", ignoreCase = true)
+                            .trim()
+                        val sanitized = if (cleanQuery.isBlank()) finalUtterance else cleanQuery
+
+                        // Clear the input accumulator after debounced dispatch
+                        resetInputBuffer()
+
+                        // Dispatch exactly once to deterministic companion
+                        onUserQueryRecognized?.invoke(sanitized)
+                    }
+                }
             }
         }
-
-        override fun onEvent(eventType: Int, params: Bundle?) {}
     }
 
-    private fun processRecognizedSpeech(rawQuery: String) {
-        val cleanQuery = rawQuery
-            .replace("hey lighthouse", "", ignoreCase = true)
-            .replace("lighthouse", "", ignoreCase = true)
-            .trim()
+    private fun resetInputBuffer() {
+        inputAccumulator.setLength(0)
+    }
 
-        val finalQuery = if (cleanQuery.isBlank()) rawQuery else cleanQuery
-        onUserQueryRecognized?.invoke(finalQuery)
+    private fun resetOutputBuffer() {
+        outputAccumulator.setLength(0)
+    }
+
+    /**
+     * Sends an app-generated text update into an active Live session for spoken delivery.
+     * Uses documented Kotlin incremental-content API:
+     * send(Content("user", listOf(TextPart(announcementText))), endOfTurn = true)
+     * This is an explicit app-triggered push, not an autonomous proactive voice loop.
+     */
+    suspend fun announceRouteSuggestion(announcementText: String) = withContext(Dispatchers.IO) {
+        if (announcementText.isBlank()) return@withContext
+
+        sessionMutex.withLock {
+            val session = activeSession ?: return@withContext
+            try {
+                val userContent = Content(
+                    role = "user",
+                    parts = listOf<Part>(TextPart(announcementText))
+                )
+                session.send(userContent, true)
+            } catch (_: Exception) {
+                // Fail-closed
+            }
+        }
+    }
+
+    fun stopLiveSession() {
+        coroutineScope.launch {
+            cleanUpSession()
+            _sessionState.value = AudioSessionState.IDLE
+        }
+    }
+
+    /**
+     * Idempotently and safely closes the WebSocket session and audio conversation.
+     * Guaranteed coroutine-safe with mutex to prevent connection leaks.
+     */
+    private suspend fun cleanUpSession() {
+        inputDebounceJob?.cancel()
+        inputDebounceJob = null
+
+        withContext(Dispatchers.Main) {
+            resetInputBuffer()
+        }
+
+        sessionMutex.withLock {
+            val session = activeSession
+            if (session != null) {
+                try {
+                    session.stopAudioConversation()
+                } catch (_: Exception) {}
+                try {
+                    session.close()
+                } catch (_: Exception) {}
+                activeSession = null
+            }
+        }
     }
 
     fun release() {
-        try {
-            speechRecognizer?.destroy()
-            textToSpeech?.stop()
-            textToSpeech?.shutdown()
-        } catch (_: Exception) {}
+        sessionJob?.cancel()
+        sessionJob = null
+        coroutineScope.launch {
+            cleanUpSession()
+            _sessionState.value = AudioSessionState.IDLE
+        }
     }
 }

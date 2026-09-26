@@ -93,8 +93,7 @@ fun GeminiLiveVoiceModal(
     val transcript by viewModel.liveSpeechTranscript.collectAsStateWithLifecycle()
     val geminiResponse by viewModel.geminiLiveVoiceResponse.collectAsStateWithLifecycle()
     val audioRms by viewModel.audioRms.collectAsStateWithLifecycle()
-    val walkSteps by viewModel.walkSteps.collectAsStateWithLifecycle()
-    val walkCalories by viewModel.walkCalories.collectAsStateWithLifecycle()
+    val statusMessage by viewModel.liveStatusMessage.collectAsStateWithLifecycle()
 
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
@@ -163,7 +162,7 @@ fun GeminiLiveVoiceModal(
                             horizontalArrangement = Arrangement.spacedBy(6.dp)
                         ) {
                             Text(
-                                text = "Gemini 3.8 Live",
+                                text = "Gemini Live",
                                 style = Typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                                 color = DeepSlateText
                             )
@@ -330,18 +329,23 @@ fun GeminiLiveVoiceModal(
                     }
 
                     // Session Status Indicator
-                    val statusText = when (audioSessionState) {
-                        AudioSessionState.LISTENING -> "Listening hands-free • Sustained dialogue active"
-                        AudioSessionState.PROCESSING -> "Gemini thinking..."
-                        AudioSessionState.SPEAKING -> "Gemini speaking • Listening will resume"
-                        AudioSessionState.ERROR -> "Microphone ready. Tap orb to speak."
-                        AudioSessionState.IDLE -> "Continuous dialogue ready • Say \"Hey Lighthouse\""
+                    val statusText = if (statusMessage.isNotBlank()) {
+                        statusMessage
+                    } else {
+                        when (audioSessionState) {
+                            AudioSessionState.LISTENING -> "Listening to your voice..."
+                            AudioSessionState.PROCESSING -> "Connecting / processing..."
+                            AudioSessionState.SPEAKING -> "Gemini speaking guidance..."
+                            AudioSessionState.ERROR -> "Offline fallback ready. Tap orb to speak."
+                            AudioSessionState.IDLE -> "Ready • Say \"Hey Lighthouse\" or tap mic"
+                        }
                     }
 
                     val statusColor = when (audioSessionState) {
                         AudioSessionState.LISTENING -> PrimaryActionBlue
                         AudioSessionState.SPEAKING -> VerifiedGreen
                         AudioSessionState.PROCESSING -> WarningAmber
+                        AudioSessionState.ERROR -> DeepSlateText
                         else -> SlateMuted
                     }
 
@@ -447,20 +451,16 @@ fun GeminiLiveVoiceModal(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 VocalCommandChip(
-                    text = "Find a safe walk to train station",
-                    onClick = { viewModel.processLiveVoiceInput("Find me a safe walk back to the train station") }
-                )
-                VocalCommandChip(
-                    text = "Yes, start navigation",
-                    onClick = { viewModel.processLiveVoiceInput("Yes, start navigation") }
-                )
-                VocalCommandChip(
-                    text = "How many steps taken?",
-                    onClick = { viewModel.processLiveVoiceInput("How many steps have I taken and calories burned?") }
-                )
-                VocalCommandChip(
                     text = "Go to Dolores Park",
                     onClick = { viewModel.processLiveVoiceInput("Take me to Mission Dolores Park") }
+                )
+                VocalCommandChip(
+                    text = "What's the best route?",
+                    onClick = { viewModel.processLiveVoiceInput("What is the best route and why?") }
+                )
+                VocalCommandChip(
+                    text = "Switch to fastest route",
+                    onClick = { viewModel.processLiveVoiceInput("Switch to the fastest route") }
                 )
                 VocalCommandChip(
                     text = "Where is nearest haven?",
