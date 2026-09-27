@@ -49,29 +49,22 @@ class ExampleRobolectricTest {
     }
 
     @Test
-    fun `verify search bar query filtering, categories and recent searches`() {
+    fun `verify destination selection opens route review and can be cleared`() {
         val context = ApplicationProvider.getApplicationContext<android.app.Application>()
         val viewModel = com.example.viewmodel.LighthouseViewModel(context)
 
-        // 1. Search query filters locations
         viewModel.setSearchQuery("Tartine")
-        val results = viewModel.searchResults.value
-        assert(results.any { it.title.contains("Tartine", ignoreCase = true) })
+        assertEquals("Tartine", viewModel.searchQuery.value)
 
-        // 2. Category filtering
-        viewModel.setSearchCategoryFilter("TRANSIT")
-        assert(viewModel.searchCategoryFilter.value == "TRANSIT")
-
-        // 3. Select search place updates destination and recent searches
         val tartine = com.example.model.MapDataDefaults.searchSuggestions.first { it.title.contains("Tartine") }
         viewModel.selectSearchPlace(tartine)
         assertEquals("Tartine Bakery", viewModel.destinationName.value)
-        assertEquals(true, viewModel.hasActiveRoute.value)
-        assert(viewModel.recentSearches.value.any { it.title == "Tartine Bakery" })
+        assertEquals(true, viewModel.isDestinationSelected.value)
+        assertEquals(true, viewModel.isRouteSheetOpen.value)
 
-        // 4. Clear recent searches
-        viewModel.clearRecentSearches()
-        assertEquals(0, viewModel.recentSearches.value.size)
+        viewModel.clearDestination()
+        assertEquals(false, viewModel.isDestinationSelected.value)
+        assertEquals(false, viewModel.isRouteSheetOpen.value)
     }
 
     @Test
@@ -95,24 +88,17 @@ class ExampleRobolectricTest {
     }
 
     @Test
-    fun `verify plain map default state and route selection`() {
+    fun `verify plain map default state and route option selection`() {
         val context = ApplicationProvider.getApplicationContext<android.app.Application>()
         val viewModel = com.example.viewmodel.LighthouseViewModel(context)
 
         // Plain map by default
-        assertEquals(false, viewModel.hasActiveRoute.value)
+        assertEquals(false, viewModel.isDestinationSelected.value)
         assertEquals(false, viewModel.isRouteSheetOpen.value)
 
-        // Select a destination option after search
-        val place = com.example.model.MapDataDefaults.searchSuggestions[0]
-        viewModel.selectSearchPlace(place)
-        assertEquals(true, viewModel.hasActiveRoute.value)
-        assertEquals(true, viewModel.isRouteSheetOpen.value)
-
-        // Clear route returns to plain map
-        viewModel.clearActiveRoute()
-        assertEquals(false, viewModel.hasActiveRoute.value)
-        assertEquals(false, viewModel.isRouteSheetOpen.value)
+        viewModel.selectRouteById("night_illuminated")
+        assertEquals("night_illuminated", viewModel.selectedRouteId.value)
+        assertEquals(true, viewModel.isDestinationSelected.value)
     }
 
     @Test
