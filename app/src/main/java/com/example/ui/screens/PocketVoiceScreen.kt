@@ -29,9 +29,7 @@ import androidx.compose.material.icons.automirrored.filled.VolumeDown
 import androidx.compose.material.icons.filled.Battery5Bar
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.CellTower
-import androidx.compose.material.icons.filled.DirectionsWalk
 import androidx.compose.material.icons.filled.FmdBad
-import androidx.compose.material.icons.filled.Lightbulb
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.MyLocation
@@ -88,8 +86,6 @@ fun PocketVoiceScreen(
     val isThinking by viewModel.isGeminiThinking.collectAsStateWithLifecycle()
     val geminiText by viewModel.geminiLiveVoiceResponse.collectAsStateWithLifecycle()
     val audioState by viewModel.audioSessionState.collectAsStateWithLifecycle()
-    val walkSteps by viewModel.walkSteps.collectAsStateWithLifecycle()
-    val walkCalories by viewModel.walkCalories.collectAsStateWithLifecycle()
 
     val pulseTransition = rememberInfiniteTransition(label = "pocket_pulse")
     val pulseRing by pulseTransition.animateFloat(
@@ -365,7 +361,7 @@ fun PocketVoiceScreen(
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(8.dp))
                             .background(Color(0xFF263945))
-                            .clickable { viewModel.processLiveVoiceInput("Where is the nearest safe haven?") }
+                            .clickable { viewModel.processLiveVoiceInput("Where is the nearest storefront?") }
                             .padding(horizontal = 12.dp, vertical = 8.dp)
                     ) {
                         Row(
@@ -379,40 +375,11 @@ fun PocketVoiceScreen(
                                 modifier = Modifier.size(16.dp)
                             )
                             Text(
-                                text = "“Hey Lighthouse, where is nearest safe haven?”",
+                                text = "“Hey Lighthouse, nearest storefront”",
                                 style = Typography.bodySmall,
                                 color = PureWhiteCard
                             )
                         }
-                    }
-                }
-
-                // Live Steps & Calories Wellness Strip
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(Color(0xFF142028))
-                        .padding(horizontal = 12.dp, vertical = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                        Icon(imageVector = Icons.Default.DirectionsWalk, contentDescription = null, tint = VerifiedGreen, modifier = Modifier.size(16.dp))
-                        Text(text = "$walkSteps steps", style = MonospaceDataSm.copy(fontWeight = FontWeight.Bold), color = PureWhiteCard)
-                    }
-                    Text(text = "•", style = MonospaceDataSm, color = SlateLight)
-                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                        Icon(imageVector = Icons.Default.Lightbulb, contentDescription = null, tint = Color(0xFFD97706), modifier = Modifier.size(15.dp))
-                        Text(text = "${String.format("%.0f", walkCalories)} kcal burned", style = MonospaceDataSm.copy(fontWeight = FontWeight.Bold), color = PureWhiteCard)
-                    }
-                    Box(
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .background(SoftSage.copy(alpha = 0.25f))
-                            .padding(horizontal = 6.dp, vertical = 2.dp)
-                    ) {
-                        Text(text = "PACING", style = MonospaceDataSm.copy(fontSize = 9.sp, fontWeight = FontWeight.Bold), color = SoftSage)
                     }
                 }
 
@@ -473,7 +440,7 @@ fun PocketVoiceScreen(
                     )
                 }
                 Text(
-                    text = "Hardware trigger: Double-press Volume Down to dispatch silent discreet distress ping.",
+                    text = "Use your device emergency shortcut if configured. This app does not silently dispatch a distress ping.",
                     style = Typography.bodySmall,
                     color = SlateLight
                 )
@@ -515,7 +482,7 @@ fun PocketVoiceScreen(
 
             // Call Maya Speed Dial
             Button(
-                onClick = { viewModel.callHumanContact("Maya Lin (Mom)") },
+                onClick = { viewModel.callPrimaryContact() },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp)

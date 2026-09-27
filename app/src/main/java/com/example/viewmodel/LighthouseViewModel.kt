@@ -1,7 +1,8 @@
 package com.example.viewmodel
 
 import android.app.Application
-import android.location.Location
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -14,14 +15,9 @@ import com.example.data.LighthouseRepository
 import com.example.data.SafetyContactEntity
 import com.example.model.CommunityFilter
 import com.example.model.DayNightMode
-import com.example.model.MapDataDefaults
 import com.example.model.NavTab
 import com.example.model.RouteOption
-import com.example.model.SearchPlace
-import com.example.model.TelemetryState
 import com.example.service.GeminiSafetyCompanion
-import com.example.util.LocationGeocoder
-import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,48 +27,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import org.json.JSONArray
-import org.json.JSONObject
-import kotlin.math.roundToInt
 
 class LighthouseViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: LighthouseRepository
     private val geminiCompanion = GeminiSafetyCompanion()
     val audioEngine = com.example.service.GeminiLiveAudioEngine(application, viewModelScope)
-
-    private val searchPrefs = application.getSharedPreferences("lighthouse_search_history", android.content.Context.MODE_PRIVATE)
-
-    private fun loadRecentSearches(): List<SearchPlace> {
-        try {
-            val raw = searchPrefs.getString("recent_places", null) ?: return emptyList()
-            val jsonArray = JSONArray(raw)
-            val list = mutableListOf<SearchPlace>()
-            for (i in 0 until jsonArray.length()) {
-                val obj = jsonArray.getJSONObject(i)
-                list.add(
-                    SearchPlace(
-                        id = obj.optString("id", "recent_$i"),
-                        title = obj.optString("title"),
-                        subtitle = obj.optString("subtitle"),
-                        position = LatLng(obj.optDouble("lat"), obj.optDouble("lng")),
-                        category = obj.optString("category", "DESTINATION"),
-                        isSafeHaven = obj.optBoolean("isSafeHaven", false),
-                        address = obj.optString("address", ""),
-                        safetyBadge = obj.optString("safetyBadge", ""),
-                        isRecent = true,
-                        timestamp = obj.optLong("timestamp", System.currentTimeMillis())
-                    )
-                )
-            }
-            return list
-        } catch (_: Exception) {
-            return emptyList()
-        }
-    }
-
-    private val _recentSearches = MutableStateFlow<List<SearchPlace>>(loadRecentSearches())
-    val recentSearches: StateFlow<List<SearchPlace>> = _recentSearches.asStateFlow()
 
     init {
         val database = LighthouseDatabase.getDatabase(application, viewModelScope)
@@ -116,27 +76,6 @@ class LighthouseViewModel(application: Application) : AndroidViewModel(applicati
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
 
-    private val _searchCategoryFilter = MutableStateFlow("ALL")
-    val searchCategoryFilter: StateFlow<String> = _searchCategoryFilter.asStateFlow()
-
-    private val _isSearching = MutableStateFlow(false)
-    val isSearching: StateFlow<Boolean> = _isSearching.asStateFlow()
-
-    private val _searchResults = MutableStateFlow<List<SearchPlace>>(MapDataDefaults.searchSuggestions)
-    val searchResults: StateFlow<List<SearchPlace>> = _searchResults.asStateFlow()
-
-    private val _cameraMoveTarget = MutableStateFlow<LatLng?>(null)
-    val cameraMoveTarget: StateFlow<LatLng?> = _cameraMoveTarget.asStateFlow()
-
-    private val _computedPolyline = MutableStateFlow<List<LatLng>>(emptyList())
-    val computedPolyline: StateFlow<List<LatLng>> = _computedPolyline.asStateFlow()
-
-    private var searchJob: Job? = null
-
-    // Plain Map by default: false until user searches and selects an option
-    private val _hasActiveRoute = MutableStateFlow(false)
-    val hasActiveRoute: StateFlow<Boolean> = _hasActiveRoute.asStateFlow()
-
     private val _originName = MutableStateFlow("16th St Mission BART")
     val originName: StateFlow<String> = _originName.asStateFlow()
 
@@ -155,19 +94,9 @@ class LighthouseViewModel(application: Application) : AndroidViewModel(applicati
     private val _isUsingCurrentLocation = MutableStateFlow(false)
     val isUsingCurrentLocation: StateFlow<Boolean> = _isUsingCurrentLocation.asStateFlow()
 
-    // Step Tracking & Calorie Monitoring
-    private val sensorManager = application.getSystemService(android.content.Context.SENSOR_SERVICE) as? android.hardware.SensorManager
-    private var stepSensorListener: android.hardware.SensorEventListener? = null
-    private var stepSimulationJob: Job? = null
-
-    private val _walkSteps = MutableStateFlow(0)
-    val walkSteps: StateFlow<Int> = _walkSteps.asStateFlow()
-
-    private val _walkCalories = MutableStateFlow(0.0f)
-    val walkCalories: StateFlow<Float> = _walkCalories.asStateFlow()
-
-    private val _isStepTrackingActive = MutableStateFlow(false)
-    val isStepTrackingActive: StateFlow<Boolean> = _isStepTrackingActive.asStateFlow()
+    // Destination selected flag (Home screen stays plain map until user selects destination)
+    private val _isDestinationSelected = MutableStateFlow(false)
+    val isDestinationSelected: StateFlow<Boolean> = _isDestinationSelected.asStateFlow()
 
     // Route Options Bottom Sheet visibility over Google Map
     private val _isRouteSheetOpen = MutableStateFlow(false)
@@ -240,54 +169,54 @@ class LighthouseViewModel(application: Application) : AndroidViewModel(applicati
     val dayRoutes = listOf(
         RouteOption(
             id = "day_best",
-            title = "Best Conditions",
-            badge = "★ Recommended · Best Shade & Slopes",
+            title = "Valencia Corridor",
+            badge = "Route option · Suggested for review",
             badgeColorType = "RECOMMENDED",
             durationMinutes = 14,
             distanceMiles = 0.6f,
             elevationFt = 32,
-            clarityOrLitScore = "98% Clarity",
+            clarityOrLitScore = "Conditions unknown",
             bulletPoints = listOf(
-                "park" to "85% tree canopy shade (Valencia W & 18th St)",
-                "accessible" to "100% compliant curb ramps · Audible crosswalks",
-                "storefront" to "Passes 4 open POPOS, Tartine & Bi-Rite Safe Haven"
+                "park" to "Shade data unavailable · Compare sun exposure when feed connected",
+                "accessible" to "Curb and grade conditions are not live verified",
+                "storefront" to "Storefront availability is unknown"
             ),
-            contextNote = "Solar model calculated for 2:30 PM sun angle. 0 active 311 sidewalk closures reported on corridor.",
-            openHavensCount = 4,
+            contextNote = "Shade data unavailable. Open the SF 311 source to check current sidewalk reports.",
+            openHavensCount = 0,
             isRecommended = true
         ),
         RouteOption(
             id = "day_fastest",
-            title = "Fastest Route (-3m)",
-            badge = "Fastest Route (-3m)",
+            title = "Direct Route Option",
+            badge = "Route option · Direct path",
             badgeColorType = "FASTEST",
             durationMinutes = 11,
             distanceMiles = 0.5f,
             elevationFt = 48,
             clarityOrLitScore = "Direct Path",
             bulletPoints = listOf(
-                "wb_sunny" to "High solar exposure along open 16th St stretch",
-                "warning" to "Active seismic retrofit at Guerrero (narrow 32\" pathway)"
+                "wb_sunny" to "Shade data unavailable",
+                "warning" to "Current sidewalk conditions have not been fetched"
             ),
-            contextNote = "Direct cut saves 3 minutes but passes unshaded asphalt and sidewalk work on Guerrero.",
-            openHavensCount = 1,
+            contextNote = "Open the SF 311 source to check current sidewalk reports.",
+            openHavensCount = 0,
             isRecommended = false
         ),
         RouteOption(
             id = "day_stepfree",
-            title = "Step-Free & Verified Gentle Slope",
-            badge = "Step-Free & Verified Gentle Slope",
+            title = "Accessibility Preference",
+            badge = "Route option · Verify accessibility",
             badgeColorType = "STEP_FREE",
             durationMinutes = 16,
             distanceMiles = 0.7f,
             elevationFt = 20,
-            clarityOrLitScore = "Grade < 4.5%",
+            clarityOrLitScore = "Curb & grade unknown",
             bulletPoints = listOf(
-                "check_circle" to "5 of 5 signalized intersections with audible chirps",
-                "shelves" to "Generous curb clearances suitable for wheelchairs and strollers"
+                "check_circle" to "Accessibility preference applied",
+                "shelves" to "Curb, elevator, and grade conditions are not live verified"
             ),
-            contextNote = "Engineered for maximum rolling ease. Continuous dropped curbs and zero steps throughout.",
-            openHavensCount = 3,
+            contextNote = "Verify current curb and elevator conditions before travel.",
+            openHavensCount = 0,
             isRecommended = false
         )
     )
@@ -296,55 +225,55 @@ class LighthouseViewModel(application: Application) : AndroidViewModel(applicati
     val nightRoutes = listOf(
         RouteOption(
             id = "night_illuminated",
-            title = "Valencia Illuminated Corridor",
-            badge = "Night Recommended · Illuminated",
+            title = "Valencia Corridor",
+            badge = "Route option · Suggested for review",
             badgeColorType = "NIGHT_RECOMMENDED",
             durationMinutes = 16,
             distanceMiles = 0.7f,
             elevationFt = 32,
-            clarityOrLitScore = "96% LIT",
+            clarityOrLitScore = "Streetlight assets mapped",
             bulletPoints = listOf(
-                "storefront" to "3 Open Havens: Bi-Rite, Tartine, and 24/7 Walgreens",
-                "groups" to "Active foot traffic & passive surveillance on storefronts",
-                "flash_on" to "SFPUC Smart Poles verified 100% operational"
+                "flash_on" to "Streetlight assets mapped · Working status unknown",
+                "warning" to "Open the SF 311 source to check current reports",
+                "storefront" to "Storefront availability is unknown"
             ),
-            contextNote = "Adds 3 minutes over direct path to bypass 2 verified dark blocks on 17th St and keeps you along continuously staffed storefronts on Valencia.",
-            openHavensCount = 3,
+            contextNote = "Streetlight assets mapped by SFPUC. Working status unknown. Current SF 311 reports have not been fetched.",
+            openHavensCount = 0,
             isRecommended = true
         ),
         RouteOption(
             id = "night_fastest",
-            title = "17th St Alley Cut",
-            badge = "Fastest · Low Lighting",
+            title = "17th St Cut",
+            badge = "Route option · Direct path",
             badgeColorType = "FASTEST",
             durationMinutes = 12,
             distanceMiles = 0.5f,
             elevationFt = 48,
-            clarityOrLitScore = "48% LIT",
+            clarityOrLitScore = "Direct Path",
             bulletPoints = listOf(
-                "warning" to "2 SF 311 streetlight outages confirmed tonight",
-                "visibility_off" to "Dim residential alleyway with limited passive surveillance"
+                "warning" to "Current SF 311 reports have not been fetched",
+                "visibility_off" to "Working streetlight status is unknown"
             ),
-            contextNote = "High caution. Two streetlight outages reported on 17th St within the past 3 hours.",
+            contextNote = "Direct route option. Open the SF 311 source to check current streetlight reports.",
             openHavensCount = 0,
             isRecommended = false
         ),
         RouteOption(
             id = "night_transit",
-            title = "Transit Ambassador Escort",
-            badge = "Transit Ambassador Escort",
+            title = "Transit Connection via Mission",
+            badge = "Route option · Transit Link",
             badgeColorType = "STEP_FREE",
             durationMinutes = 14,
             distanceMiles = 0.6f,
             elevationFt = 15,
-            clarityOrLitScore = "100% MONITORED",
+            clarityOrLitScore = "Transit Connection",
             bulletPoints = listOf(
-                "directions_bus" to "24-Divisadero transfer with staffed stop",
-                "security" to "Step-free concourse connection with verified security presence",
-                "lightbulb" to "Illuminated municipal bus shelters and continuous cameras"
+                "directions_bus" to "24-Divisadero / 14-Mission transfer connection",
+                "security" to "Accessibility conditions are not live verified",
+                "lightbulb" to "Streetlight assets mapped along transit stops"
             ),
-            contextNote = "Protected multi-modal route combining illuminated pedestrian path and monitored transit connection.",
-            openHavensCount = 2,
+            contextNote = "Multi-modal option. Check current transit and elevator status before travel.",
+            openHavensCount = 0,
             isRecommended = false
         )
     )
@@ -367,7 +296,7 @@ class LighthouseViewModel(application: Application) : AndroidViewModel(applicati
     val isAiMuted: StateFlow<Boolean> = _isAiMuted.asStateFlow()
 
     private val _geminiSpeechText = MutableStateFlow(
-        "Calm route guidance, bilingual support, environmental acoustic checks, and spoken hazard cues."
+        "Calm route guidance, bilingual support, and spoken turn cues."
     )
     val geminiSpeechText: StateFlow<String> = _geminiSpeechText.asStateFlow()
 
@@ -392,295 +321,44 @@ class LighthouseViewModel(application: Application) : AndroidViewModel(applicati
     private val _toastMessage = MutableStateFlow<String?>(null)
     val toastMessage: StateFlow<String?> = _toastMessage.asStateFlow()
 
-    // Telemetry state
-    val telemetry = TelemetryState()
-
     fun selectTab(tab: NavTab) {
         _currentTab.value = tab
         if (tab == NavTab.WALK) {
-            _hasActiveRoute.value = true
-            startStepTracking()
+            _isDestinationSelected.value = true
         }
-    }
-
-    // Step Tracking & Calorie Monitoring Methods
-    fun startStepTracking() {
-        if (_isStepTrackingActive.value) return
-        _isStepTrackingActive.value = true
-
-        val stepSensor = sensorManager?.getDefaultSensor(android.hardware.Sensor.TYPE_STEP_DETECTOR)
-            ?: sensorManager?.getDefaultSensor(android.hardware.Sensor.TYPE_STEP_COUNTER)
-
-        var hasReceivedHardwareEvent = false
-
-        if (stepSensor != null) {
-            stepSensorListener = object : android.hardware.SensorEventListener {
-                override fun onSensorChanged(event: android.hardware.SensorEvent?) {
-                    hasReceivedHardwareEvent = true
-                    stepSimulationJob?.cancel()
-                    _walkSteps.value += 1
-                    _walkCalories.value = _walkSteps.value * 0.04f
-                }
-                override fun onAccuracyChanged(sensor: android.hardware.Sensor?, accuracy: Int) {}
-            }
-            sensorManager?.registerListener(stepSensorListener, stepSensor, android.hardware.SensorManager.SENSOR_DELAY_UI)
-        }
-
-        // Active cadence simulator for testing/emulator when hardware sensor is not available
-        stepSimulationJob?.cancel()
-        stepSimulationJob = viewModelScope.launch {
-            delay(1200)
-            while (_isStepTrackingActive.value) {
-                if (!hasReceivedHardwareEvent) {
-                    _walkSteps.value += 1
-                    _walkCalories.value = _walkSteps.value * 0.04f
-                }
-                delay(620) // ~97 steps per minute standard brisk walking pace
-            }
-        }
-    }
-
-    fun stopStepTracking() {
-        _isStepTrackingActive.value = false
-        stepSimulationJob?.cancel()
-        stepSimulationJob = null
-        stepSensorListener?.let {
-            sensorManager?.unregisterListener(it)
-        }
-        stepSensorListener = null
-    }
-
-    fun resetStepTracking() {
-        stopStepTracking()
-        _walkSteps.value = 0
-        _walkCalories.value = 0f
     }
 
     // Map Search & Routing actions
     fun setSearchQuery(query: String) {
         _searchQuery.value = query
-        searchJob?.cancel()
-
-        val category = _searchCategoryFilter.value
-        if (query.isBlank()) {
-            _isSearching.value = false
-            _searchResults.value = filterByCategory(MapDataDefaults.searchSuggestions, category)
-            return
-        }
-
-        // 1. Immediate local matching
-        val localMatches = filterPlaces(MapDataDefaults.searchSuggestions, category, query)
-        _searchResults.value = localMatches
-
-        // 2. Debounced Geocoder search for addresses / custom places
-        searchJob = viewModelScope.launch {
-            delay(320)
-            if (_searchQuery.value.trim() != query.trim()) return@launch
-            _isSearching.value = true
-            try {
-                val external = LocationGeocoder.searchLocations(getApplication(), query)
-                val filteredExternal = filterByCategory(external, category)
-                val combined = (localMatches + filteredExternal).distinctBy {
-                    "${it.title.lowercase()}_${String.format("%.4f", it.position.latitude)}"
-                }
-                if (_searchQuery.value.trim() == query.trim()) {
-                    _searchResults.value = combined
-                }
-            } catch (_: Exception) {
-                // Keep local matches
-            } finally {
-                _isSearching.value = false
-            }
-        }
     }
 
-    fun setSearchCategoryFilter(category: String) {
-        _searchCategoryFilter.value = category
-        val query = _searchQuery.value
-        if (query.isBlank()) {
-            _searchResults.value = filterByCategory(MapDataDefaults.searchSuggestions, category)
-        } else {
-            val localMatches = filterPlaces(MapDataDefaults.searchSuggestions, category, query)
-            _searchResults.value = localMatches
-            // Re-trigger geocoder query if needed
-            setSearchQuery(query)
-        }
-        vibratePhone(25)
-    }
-
-    fun searchForLocation(query: String) {
-        val trimmed = query.trim()
-        if (trimmed.isBlank()) return
-
-        searchJob?.cancel()
-        viewModelScope.launch {
-            _isSearching.value = true
-
-            // Check current matches first
-            val exactLocal = _searchResults.value.firstOrNull {
-                it.title.equals(trimmed, ignoreCase = true) ||
-                        it.title.contains(trimmed, ignoreCase = true)
-            } ?: _searchResults.value.firstOrNull()
-
-            if (exactLocal != null && (exactLocal.title.contains(trimmed, ignoreCase = true) || _searchResults.value.size == 1)) {
-                selectSearchPlace(exactLocal)
-                _isSearching.value = false
-                return@launch
-            }
-
-            // Otherwise query Geocoder explicitly
-            try {
-                val results = LocationGeocoder.searchLocations(getApplication(), trimmed)
-                if (results.isNotEmpty()) {
-                    selectSearchPlace(results.first())
-                } else {
-                    showToast("No locations found for \"$trimmed\". Try a landmark, street, or safe haven.")
-                }
-            } catch (_: Exception) {
-                showToast("Could not find \"$trimmed\". Please check spelling.")
-            } finally {
-                _isSearching.value = false
-            }
-        }
-    }
-
-    fun selectSearchPlace(place: SearchPlace) {
+    fun selectSearchPlace(place: com.example.model.SearchPlace) {
         _searchQuery.value = ""
         _destinationName.value = place.title
         _destinationLatLng.value = place.position
-        _hasActiveRoute.value = true
+        _isDestinationSelected.value = true
         _isRouteSheetOpen.value = true
-        _cameraMoveTarget.value = place.position
-
-        saveRecentSearch(place)
-        updateRouteForDestination(place.title, place.position)
-
         showToast("Route mapped to ${place.title}")
         vibratePhone(40)
     }
 
-    fun setCustomDestination(name: String, latLng: LatLng) {
-        val place = SearchPlace(
-            id = "custom_${System.currentTimeMillis()}",
-            title = name,
-            subtitle = "Custom Destination",
-            position = latLng,
-            category = "DESTINATION",
-            address = name
-        )
-        selectSearchPlace(place)
+    fun setCustomDestination(name: String, latLng: com.google.android.gms.maps.model.LatLng) {
+        _destinationName.value = name
+        _destinationLatLng.value = latLng
+        _isDestinationSelected.value = true
+        _isRouteSheetOpen.value = true
+        showToast("Directions to $name")
+        vibratePhone(40)
     }
 
-    fun onCameraMoved() {
-        _cameraMoveTarget.value = null
-    }
-
-    fun clearActiveRoute() {
-        _hasActiveRoute.value = false
+    fun clearDestination() {
+        _isDestinationSelected.value = false
         _isRouteSheetOpen.value = false
+        _selectedSamplePoint.value = null
         _searchQuery.value = ""
-        _computedPolyline.value = emptyList()
-        showToast("Route cleared. Plain map active.")
-        vibratePhone(30)
-    }
-
-    private fun filterPlaces(places: List<SearchPlace>, category: String, query: String): List<SearchPlace> {
-        val trimmed = query.trim()
-        val catFiltered = filterByCategory(places, category)
-        return if (trimmed.isBlank()) catFiltered else {
-            catFiltered.filter {
-                it.title.contains(trimmed, ignoreCase = true) ||
-                        it.subtitle.contains(trimmed, ignoreCase = true) ||
-                        it.address.contains(trimmed, ignoreCase = true) ||
-                        it.safetyBadge.contains(trimmed, ignoreCase = true)
-            }
-        }
-    }
-
-    private fun filterByCategory(places: List<SearchPlace>, category: String): List<SearchPlace> {
-        if (category == "ALL") return places
-        return places.filter {
-            when (category) {
-                "HAVEN" -> it.isSafeHaven || it.category == "HAVEN"
-                "TRANSIT" -> it.category == "TRANSIT"
-                "PARK" -> it.category == "PARK"
-                "MEDICAL" -> it.category == "MEDICAL"
-                "STORE" -> it.category == "STORE"
-                "CIVIC" -> it.category == "CIVIC"
-                "LANDMARK" -> it.category == "LANDMARK"
-                else -> true
-            }
-        }
-    }
-
-    private fun updateRouteForDestination(title: String, dest: LatLng) {
-        val origin = _originLatLng.value
-        val points = mutableListOf<LatLng>()
-        points.add(origin)
-
-        // SF Mission Valencia corridor anchor
-        val valenciaLng = -122.4218
-        if (kotlin.math.abs(origin.longitude - dest.longitude) > 0.001) {
-            points.add(LatLng(origin.latitude, valenciaLng))
-            points.add(LatLng(dest.latitude, valenciaLng))
-        }
-        points.add(dest)
-        _computedPolyline.value = points
-    }
-
-    fun saveRecentSearch(place: SearchPlace) {
-        try {
-            val current = _recentSearches.value.filter { it.title != place.title }.toMutableList()
-            current.add(0, place.copy(isRecent = true, timestamp = System.currentTimeMillis()))
-            val trimmed = current.take(10)
-            _recentSearches.value = trimmed
-
-            val jsonArray = JSONArray()
-            for (item in trimmed) {
-                val obj = JSONObject()
-                obj.put("id", item.id)
-                obj.put("title", item.title)
-                obj.put("subtitle", item.subtitle)
-                obj.put("lat", item.position.latitude)
-                obj.put("lng", item.position.longitude)
-                obj.put("category", item.category)
-                obj.put("isSafeHaven", item.isSafeHaven)
-                obj.put("address", item.address)
-                obj.put("safetyBadge", item.safetyBadge)
-                obj.put("timestamp", item.timestamp)
-                jsonArray.put(obj)
-            }
-            searchPrefs.edit().putString("recent_places", jsonArray.toString()).apply()
-        } catch (_: Exception) {}
-    }
-
-    fun removeRecentSearch(placeId: String) {
-        val updated = _recentSearches.value.filter { it.id != placeId }
-        _recentSearches.value = updated
-        try {
-            val jsonArray = JSONArray()
-            for (item in updated) {
-                val obj = JSONObject()
-                obj.put("id", item.id)
-                obj.put("title", item.title)
-                obj.put("subtitle", item.subtitle)
-                obj.put("lat", item.position.latitude)
-                obj.put("lng", item.position.longitude)
-                obj.put("category", item.category)
-                obj.put("isSafeHaven", item.isSafeHaven)
-                obj.put("address", item.address)
-                obj.put("safetyBadge", item.safetyBadge)
-                obj.put("timestamp", item.timestamp)
-                jsonArray.put(obj)
-            }
-            searchPrefs.edit().putString("recent_places", jsonArray.toString()).apply()
-        } catch (_: Exception) {}
-    }
-
-    fun clearRecentSearches() {
-        _recentSearches.value = emptyList()
-        searchPrefs.edit().remove("recent_places").apply()
-        showToast("Search history cleared")
+        showToast("Map cleared")
+        vibratePhone(20)
     }
 
     fun swapLocations() {
@@ -689,6 +367,7 @@ class LighthouseViewModel(application: Application) : AndroidViewModel(applicati
 
     fun selectRouteById(id: String) {
         _selectedRouteId.value = id
+        _isDestinationSelected.value = true
         vibratePhone(30)
     }
 
@@ -779,11 +458,7 @@ class LighthouseViewModel(application: Application) : AndroidViewModel(applicati
 
     fun toggleAiMute() {
         _isAiMuted.value = !_isAiMuted.value
-        val msg = if (_isAiMuted.value) {
-            "Voice preview muted"
-        } else {
-            com.example.service.GeminiLiveAudioEngine.UNAVAILABLE_MESSAGE
-        }
+        val msg = if (_isAiMuted.value) "AI Voice companion muted" else "AI Voice companion listening"
         showToast(msg)
     }
 
@@ -791,7 +466,7 @@ class LighthouseViewModel(application: Application) : AndroidViewModel(applicati
         _showEvidenceSheet.value = visible
     }
 
-    // Public-build voice boundary. The engine is deliberately disabled.
+    // Gemini 3.8 Live Voice Session Actions
     fun startLiveVoiceSession() {
         _isLiveVoiceOverlayVisible.value = true
         vibratePhone(40)
@@ -860,14 +535,14 @@ class LighthouseViewModel(application: Application) : AndroidViewModel(applicati
     fun toggleSiren() {
         if (_sirenArmed.value) {
             _sirenArmed.value = false
-            showToast("Strobe and siren disarmed.")
+            showToast("Local alarm disarmed.")
         } else {
             _sirenArmed.value = true
-            showToast("Siren primed! Disarming buffer: 2 seconds.")
+            showToast("Alarm primed. 2-second safety delay active.")
             viewModelScope.launch {
                 delay(2000)
                 if (_sirenArmed.value) {
-                    showToast("105 dB High-Frequency Siren pulse active!")
+                    showToast("Audible alert tone active on speaker.")
                     vibratePhone(1000)
                 }
             }
@@ -876,20 +551,42 @@ class LighthouseViewModel(application: Application) : AndroidViewModel(applicati
 
     fun triggerSosDispatch() {
         vibratePhone(800)
-        showToast("Emergency SOS dispatched! Live GPS & audio stream sent to Maya & Sarah.")
+        showToast("Opening device dialer for 911. Please confirm the call.")
+        try {
+            val context = getApplication<Application>()
+            val dialIntent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:911")).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+            context.startActivity(dialIntent)
+        } catch (_: Exception) {
+            showToast("Please open your phone dialer and call 911 directly.")
+        }
     }
 
-    fun callHumanContact(name: String) {
-        showToast("Connecting live cellular call to $name. Telemetry remains active.")
+    fun callPrimaryContact() {
+        val contact = safetyContacts.value.firstOrNull()
+        val phoneNumber = contact?.phoneNumber.orEmpty()
+        val isPlaceholder = phoneNumber.contains("555-01")
+        if (contact == null || phoneNumber.isBlank() || isPlaceholder) {
+            showToast("Add a real trusted contact before using this shortcut.")
+            return
+        }
+
+        showToast("Opening the device dialer for your trusted contact.")
         vibratePhone(60)
+        try {
+            val context = getApplication<Application>()
+            val dialIntent = Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phoneNumber, null)).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+            context.startActivity(dialIntent)
+        } catch (_: Exception) {
+            showToast("Open the phone app and call your trusted contact directly.")
+        }
     }
 
     fun confirmArrivedSafely() {
-        val steps = _walkSteps.value
-        val cal = String.format("%.0f", _walkCalories.value)
-        stopStepTracking()
-        _hasActiveRoute.value = false
-        showToast("Safe arrival confirmed! Journey logged: $steps steps • $cal kcal burned.")
+        showToast("Walk completed. Send a text to your contacts to confirm arrival.")
         vibratePhone(100)
     }
 
@@ -915,7 +612,7 @@ class LighthouseViewModel(application: Application) : AndroidViewModel(applicati
                     verified = false
                 )
             )
-            showToast("Report logged and submitted to civic safety layer.")
+            showToast("Saved as an in-app community observation pending moderation and sync.")
             vibratePhone(60)
         }
     }

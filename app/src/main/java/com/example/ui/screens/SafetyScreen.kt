@@ -1,10 +1,9 @@
 package com.example.ui.screens
 
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,21 +22,16 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.CellTower
-import androidx.compose.material.icons.filled.Chat
-import androidx.compose.material.icons.filled.Emergency
 import androidx.compose.material.icons.filled.FamilyRestroom
 import androidx.compose.material.icons.filled.Fingerprint
 import androidx.compose.material.icons.filled.NearMe
-import androidx.compose.material.icons.filled.PhoneInTalk
 import androidx.compose.material.icons.filled.RingVolume
-import androidx.compose.material.icons.filled.ScreenLockPortrait
 import androidx.compose.material.icons.filled.Sms
 import androidx.compose.material.icons.filled.Sos
 import androidx.compose.material.icons.filled.TouchApp
 import androidx.compose.material.icons.filled.VerifiedUser
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.filled.VolumeUp
-import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -50,7 +43,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -59,6 +51,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -69,7 +62,6 @@ import com.example.ui.theme.DeepSlateDark
 import com.example.ui.theme.DeepSlateText
 import com.example.ui.theme.EmergencyRose
 import com.example.ui.theme.MistBlue
-import com.example.ui.theme.MonospaceDataMd
 import com.example.ui.theme.MonospaceDataSm
 import com.example.ui.theme.PrimaryActionBlue
 import com.example.ui.theme.PureWhiteCard
@@ -80,22 +72,22 @@ import com.example.ui.theme.Typography
 import com.example.ui.theme.VerifiedGreen
 import com.example.viewmodel.LighthouseViewModel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @Composable
 fun SafetyScreen(
     viewModel: LighthouseViewModel,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
     val sirenArmed by viewModel.sirenArmed.collectAsStateWithLifecycle()
     val scrollState = rememberScrollState()
 
     var isHoldingSos by remember { mutableStateOf(false) }
     var sosHoldProgress by remember { mutableFloatStateOf(0f) }
-    var sosDispatched by remember { mutableStateOf(false) }
+    var sosTriggered by remember { mutableStateOf(false) }
 
     LaunchedEffect(isHoldingSos) {
-        if (isHoldingSos && !sosDispatched) {
+        if (isHoldingSos && !sosTriggered) {
             val totalSteps = 30
             for (step in 1..totalSteps) {
                 if (!isHoldingSos) break
@@ -103,7 +95,7 @@ fun SafetyScreen(
                 sosHoldProgress = step.toFloat() / totalSteps
             }
             if (isHoldingSos) {
-                sosDispatched = true
+                sosTriggered = true
                 viewModel.triggerSosDispatch()
             }
         } else {
@@ -135,7 +127,7 @@ fun SafetyScreen(
                         .background(VerifiedGreen)
                 )
                 Text(
-                    text = "ACTIVE GUARDIAN EMERGENCY SYSTEM",
+                    text = "EMERGENCY SAFETY SHORTCUTS",
                     style = MonospaceDataSm.copy(fontWeight = FontWeight.Bold),
                     color = DeepSlateText
                 )
@@ -147,7 +139,7 @@ fun SafetyScreen(
                     .padding(horizontal = 8.dp, vertical = 2.dp)
             ) {
                 Text(
-                    text = "STABLE",
+                    text = "ACTIVE",
                     style = MonospaceDataSm.copy(fontSize = 10.sp, fontWeight = FontWeight.Bold),
                     color = VerifiedGreen
                 )
@@ -165,7 +157,7 @@ fun SafetyScreen(
                 modifier = Modifier.size(16.dp)
             )
             Text(
-                text = "Accidental activation guard enabled · Silent standby mode",
+                text = "Hold button below to open dialer to 911 · Local device tools",
                 style = Typography.bodySmall,
                 color = SlateMuted
             )
@@ -215,7 +207,7 @@ fun SafetyScreen(
                         modifier = Modifier
                             .size(140.dp)
                             .clip(CircleShape)
-                            .background(if (sosDispatched) EmergencyRose else Color(0xFFB95D66))
+                            .background(if (sosTriggered) EmergencyRose else Color(0xFFB95D66))
                             .pointerInput(Unit) {
                                 detectTapGestures(
                                     onPress = {
@@ -238,12 +230,12 @@ fun SafetyScreen(
                                 modifier = Modifier.size(32.dp)
                             )
                             Text(
-                                text = if (sosDispatched) "DISPATCHED" else if (isHoldingSos) "HOLDING" else "HOLD",
+                                text = if (sosTriggered) "OPENING" else if (isHoldingSos) "HOLDING" else "HOLD 911",
                                 style = Typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
                                 color = PureWhiteCard
                             )
                             Text(
-                                text = if (sosDispatched) "ACTIVE ALERT" else if (isHoldingSos) "${((1f - sosHoldProgress) * 3).toInt() + 1}s REMAINING" else "3 SECONDS",
+                                text = if (sosTriggered) "DIALER READY" else if (isHoldingSos) "${((1f - sosHoldProgress) * 3).toInt() + 1}s REMAINING" else "3 SECONDS",
                                 style = MonospaceDataSm.copy(fontSize = 10.sp),
                                 color = PureWhiteCard.copy(alpha = 0.9f)
                             )
@@ -252,7 +244,7 @@ fun SafetyScreen(
                 }
 
                 Text(
-                    text = "Transmits live GPS, battery level, and silent audio to Maya & Sarah",
+                    text = "Press and hold for 3 seconds to prompt a phone call to 911",
                     style = Typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
                     color = DeepSlateText
                 )
@@ -275,7 +267,7 @@ fun SafetyScreen(
                             modifier = Modifier.size(16.dp)
                         )
                         Text(
-                            text = "Cancel anytime with biometric fingerprint or 4-digit PIN",
+                            text = "Release prior to 3 seconds to cancel",
                             style = Typography.bodySmall,
                             color = DeepSlateText
                         )
@@ -310,12 +302,12 @@ fun SafetyScreen(
                         }
                         Column {
                             Text(
-                                text = "Hardware Shortcut Active",
+                                text = "Emergency Shortcut Guidance",
                                 style = Typography.labelSmall.copy(fontWeight = FontWeight.Bold),
                                 color = DeepSlateText
                             )
                             Text(
-                                text = "Double-press Volume Down from any screen or locked pocket",
+                            text = "In immediate danger, call 911 or use your device emergency shortcut if configured",
                                 style = Typography.bodySmall,
                                 color = SlateMuted
                             )
@@ -325,7 +317,7 @@ fun SafetyScreen(
             }
         }
 
-        // Live Telemetry & Mesh Layer
+        // Device Connection & Contacts Layer
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -342,7 +334,7 @@ fun SafetyScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "LIVE TELEMETRY & MESH LAYER",
+                        text = "DEVICE STATUS & CONTACTS",
                         style = MonospaceDataSm.copy(fontSize = 10.sp),
                         color = SlateMuted
                     )
@@ -357,14 +349,14 @@ fun SafetyScreen(
                                 .background(VerifiedGreen)
                         )
                         Text(
-                            text = "99.8% Signal",
+                            text = "Network not checked",
                             style = MonospaceDataSm,
-                            color = VerifiedGreen
+                            color = SlateMuted
                         )
                     }
                 }
 
-                // Row 1: GPS
+                // Row 1: Location approximation
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -381,7 +373,7 @@ fun SafetyScreen(
                         Icon(imageVector = Icons.Default.NearMe, contentDescription = null, tint = PrimaryActionBlue, modifier = Modifier.size(18.dp))
                         Column {
                             Text(text = "18th St & Valencia, SF", style = Typography.labelMedium.copy(fontWeight = FontWeight.Bold), color = DeepSlateText)
-                            Text(text = "Accuracy ±9 ft · Elevation 42m", style = MonospaceDataSm, color = SlateMuted)
+                            Text(text = "Corridor waypoint estimate", style = MonospaceDataSm, color = SlateMuted)
                         }
                     }
                     Box(
@@ -390,11 +382,11 @@ fun SafetyScreen(
                             .background(PureWhiteCard)
                             .padding(horizontal = 6.dp, vertical = 2.dp)
                     ) {
-                        Text(text = "GPS HOT", style = MonospaceDataSm.copy(fontWeight = FontWeight.Bold), color = DeepSlateText)
+                        Text(text = "STANDBY", style = MonospaceDataSm.copy(fontWeight = FontWeight.Bold), color = DeepSlateText)
                     }
                 }
 
-                // Row 2: Offline Mesh
+                // Row 2: Cellular
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -410,8 +402,8 @@ fun SafetyScreen(
                     ) {
                         Icon(imageVector = Icons.Default.CellTower, contentDescription = null, tint = VerifiedGreen, modifier = Modifier.size(18.dp))
                         Column {
-                            Text(text = "Offline Mesh Fallback", style = Typography.labelMedium.copy(fontWeight = FontWeight.Bold), color = DeepSlateText)
-                            Text(text = "SMS relay & peer hops ready if 5G drops", style = Typography.bodySmall, color = SlateMuted)
+                            Text(text = "Cellular Network Connection", style = Typography.labelMedium.copy(fontWeight = FontWeight.Bold), color = DeepSlateText)
+                            Text(text = "Standard cellular call and SMS service", style = Typography.bodySmall, color = SlateMuted)
                         }
                     }
                     Box(
@@ -420,7 +412,7 @@ fun SafetyScreen(
                             .background(SoftSage)
                             .padding(horizontal = 6.dp, vertical = 2.dp)
                     ) {
-                        Text(text = "ARMED", style = MonospaceDataSm.copy(fontWeight = FontWeight.Bold), color = VerifiedGreen)
+                        Text(text = "SYSTEM", style = MonospaceDataSm.copy(fontWeight = FontWeight.Bold), color = DeepSlateText)
                     }
                 }
 
@@ -448,13 +440,13 @@ fun SafetyScreen(
                             Icon(imageVector = Icons.Default.FamilyRestroom, contentDescription = null, tint = VerifiedGreen, modifier = Modifier.size(18.dp))
                         }
                         Column {
-                            Text(text = "Maya Lin (Primary Contact)", style = Typography.labelMedium.copy(fontWeight = FontWeight.Bold), color = DeepSlateText)
-                            Text(text = "Silent live-link pre-authenticated", style = Typography.bodySmall, color = SlateMuted)
+                            Text(text = "Trusted contact", style = Typography.labelMedium.copy(fontWeight = FontWeight.Bold), color = DeepSlateText)
+                            Text(text = "Opens a configured number in the device dialer", style = Typography.bodySmall, color = SlateMuted)
                         }
                     }
 
                     Button(
-                        onClick = { viewModel.callHumanContact("Maya Lin (Mom)") },
+                        onClick = { viewModel.callPrimaryContact() },
                         modifier = Modifier.height(36.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = PureWhiteCard),
                         shape = RoundedCornerShape(8.dp)
@@ -464,7 +456,7 @@ fun SafetyScreen(
                             horizontalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
                             Icon(imageVector = Icons.Default.Call, contentDescription = null, tint = VerifiedGreen, modifier = Modifier.size(14.dp))
-                            Text(text = "1-Tap", style = Typography.labelSmall.copy(fontWeight = FontWeight.Bold), color = VerifiedGreen)
+                            Text(text = "Call", style = Typography.labelSmall.copy(fontWeight = FontWeight.Bold), color = VerifiedGreen)
                         }
                     }
                 }
@@ -479,7 +471,7 @@ fun SafetyScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "DISCREET DEFENSE SUITE",
+                    text = "LOCAL SAFETY TOOLS",
                     style = Typography.labelLarge.copy(letterSpacing = 1.sp),
                     color = DeepSlateText
                 )
@@ -495,10 +487,10 @@ fun SafetyScreen(
                 icon = Icons.Default.RingVolume,
                 iconBg = PrimaryActionBlue,
                 title = "Simulate Incoming Call",
-                subtitle = "Natural Voice Synthetic Audio",
-                tag = "DISCREET",
-                description = "Generates a realistic audio ring and conversational check-in from \"Dad\" to effortlessly de-escalate street tension without confrontation.",
-                actionLabel = "Trigger Fake Call Now",
+                subtitle = "Local Simulated Audio Ring",
+                tag = "LOCAL DEMO",
+                description = "Plays a realistic phone ring and audio check-in sound locally on device to provide an excuse to step away from uncomfortable interactions.",
+                actionLabel = "Trigger Simulated Call",
                 actionTag = "trigger_fake_call_button",
                 onClick = { viewModel.triggerFakeCall() }
             )
@@ -508,38 +500,45 @@ fun SafetyScreen(
                 icon = Icons.Default.VisibilityOff,
                 iconBg = DeepSlateDark,
                 title = "Screen Blackout Mode",
-                subtitle = "Hardware Camouflage",
-                tag = "STEALTH",
-                description = "Completely blacks out display pixels while maintaining continuous high-accuracy GPS telemetry and silent microphone streaming in background. Tap screen 3x to revive.",
+                subtitle = "Screen Camouflage",
+                tag = "LOCAL DISPLAY",
+                description = "Displays a black overlay while app navigation remains loaded. Triple-tap anywhere on the dark screen to return to the display.",
                 actionLabel = "Enable Blackout Display",
                 actionTag = "enable_blackout_button",
                 onClick = { viewModel.enableBlackout() }
             )
 
-            // 3. Silent 911 Text Dispatch
+            // 3. 911 Text Composer
             DefenseModuleCard(
                 icon = Icons.Default.Sms,
                 iconBg = VerifiedGreen,
-                title = "Silent 911 Text Dispatch",
-                subtitle = "SF Emergency CAD API",
-                tag = "CAD-CERTIFIED",
-                description = "Silently sends your precise geocode, current street heading, battery telemetry, and audio descriptor directly to municipal emergency dispatch without placing an audible voice call.",
-                actionLabel = "Compose Automated 911 Text",
+                title = "Compose Text to 911",
+                subtitle = "Standard SMS Application",
+                tag = "SMS LAUNCHER",
+                description = "Opens your phone's default text messaging app addressed to 911 with your approximate street location pre-filled. You must review and press send.",
+                actionLabel = "Open Text to 911",
                 actionTag = "compose_911_text_button",
                 onClick = {
-                    viewModel.showToast("Automated dispatch packet prepared for SF CAD API.")
+                    try {
+                        val smsIntent = Intent(Intent.ACTION_VIEW, Uri.parse("sms:911")).apply {
+                            putExtra("sms_body", "I need assistance near 18th St and Valencia, San Francisco.")
+                        }
+                        context.startActivity(smsIntent)
+                    } catch (_: Exception) {
+                        viewModel.showToast("Please open your phone messaging app and text 911 directly.")
+                    }
                 }
             )
 
-            // 4. Deterrent Siren & Strobe
+            // 4. Local Audible Alarm
             DefenseModuleCard(
                 icon = Icons.Default.VolumeUp,
                 iconBg = EmergencyRose,
-                title = "Deterrent Siren & Strobe",
-                subtitle = "105 dB High-Frequency Pulse",
-                tag = "PUBLIC ALARM",
-                description = "Instantly triggers high-candela camera flash strobe and a disorienting, piercing 105 dB sound pattern engineered to divert threats and attract immediate bystander intervention.",
-                actionLabel = if (sirenArmed) "Disarm Strobe & Siren" else "Arm Strobe & Siren (2s Delay)",
+                title = "Audible Alarm & Vibration",
+                subtitle = "Device Speaker Alarm",
+                tag = "LOCAL ALARM",
+                description = "Sounds your device speaker alert and vibrates the phone after a 2-second safety buffer to attract nearby bystander attention.",
+                actionLabel = if (sirenArmed) "Disarm Local Alarm" else "Arm Local Alarm (2s Delay)",
                 actionTag = "arm_siren_button",
                 isErrorAction = true,
                 onClick = { viewModel.toggleSiren() }

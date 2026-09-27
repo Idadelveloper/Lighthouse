@@ -132,12 +132,12 @@ fun CommunityScreen(
                     }
                     Column {
                         Text(
-                            text = "Community & Civic Feeds",
+                            text = "Community Observations",
                             style = Typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                             color = DeepSlateText
                         )
                         Text(
-                            text = "Real-time verified infrastructure & local reports",
+                            text = "Unverified peer observations & reported conditions",
                             style = Typography.bodySmall,
                             color = SlateMuted
                         )
@@ -147,7 +147,7 @@ fun CommunityScreen(
                 Box(
                     modifier = Modifier
                         .clip(CircleShape)
-                        .background(SoftSage)
+                        .background(MistBlue)
                         .padding(horizontal = 8.dp, vertical = 3.dp)
                 ) {
                     Row(
@@ -158,12 +158,12 @@ fun CommunityScreen(
                             modifier = Modifier
                                 .size(5.dp)
                                 .clip(CircleShape)
-                                .background(VerifiedGreen)
+                                .background(SlateMuted)
                         )
                         Text(
-                            text = "LIVE",
+                            text = "COMMUNITY",
                             style = MonospaceDataSm.copy(fontSize = 10.sp, fontWeight = FontWeight.Bold),
-                            color = VerifiedGreen
+                            color = SlateMuted
                         )
                     }
                 }
@@ -327,7 +327,7 @@ fun CommunityScreen(
                         color = DeepSlateText
                     )
                     Text(
-                        text = "Clear separation between Official Municipal Feeds, Verified Safe Partners, and Opt-In Pedestrian Reports. No reports ≠ zero risk. Always trust your immediate physical senses.",
+                        text = "Clear separation between official source links, unverified storefront candidates, and opt-in pedestrian reports. No reports ≠ zero risk. Trust current conditions around you.",
                         style = Typography.bodySmall,
                         color = SlateMuted
                     )
@@ -352,7 +352,7 @@ fun CommunityScreen(
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(
-                        text = "Your submission will be tagged with your current GPS geocode and transmitted to the pedestrian routing layer and SF 311.",
+                        text = "Your submission will be saved as an in-app community observation pending moderation and sync. It is not transmitted to SF 311.",
                         style = Typography.bodySmall,
                         color = SlateMuted
                     )
@@ -495,7 +495,7 @@ private fun ReportCardItem(
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.haven_birite_storefront),
-                        contentDescription = "Safe Haven storefront",
+                        contentDescription = "Storefront candidate photo",
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop
                     )

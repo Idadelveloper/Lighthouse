@@ -24,8 +24,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Directions
-import androidx.compose.material.icons.filled.DirectionsSubway
 import androidx.compose.material.icons.filled.DirectionsWalk
 import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.Layers
@@ -41,6 +41,7 @@ import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -82,6 +83,7 @@ fun RoutePlannerScreen(
     viewModel: LighthouseViewModel,
     modifier: Modifier = Modifier
 ) {
+    val isDestinationSelected by viewModel.isDestinationSelected.collectAsStateWithLifecycle()
     val isRouteSheetOpen by viewModel.isRouteSheetOpen.collectAsStateWithLifecycle()
     val dayNightMode by viewModel.dayNightMode.collectAsStateWithLifecycle()
     val originName by viewModel.originName.collectAsStateWithLifecycle()
@@ -90,16 +92,19 @@ fun RoutePlannerScreen(
     val selectedDayId by viewModel.selectedDayRouteId.collectAsStateWithLifecycle()
     val selectedNightId by viewModel.selectedNightRouteId.collectAsStateWithLifecycle()
     val isLiveVoiceOverlayVisible by viewModel.isLiveVoiceOverlayVisible.collectAsStateWithLifecycle()
-    val hasActiveRoute by viewModel.hasActiveRoute.collectAsStateWithLifecycle()
 
     val currentRoutes = if (dayNightMode == DayNightMode.DAY) viewModel.dayRoutes else viewModel.nightRoutes
     val selectedRoute = currentRoutes.find {
         it.id == (if (dayNightMode == DayNightMode.DAY) selectedDayId else selectedNightId)
     } ?: currentRoutes.first()
 
-    // Handle back press to dismiss bottom sheet if open
-    BackHandler(enabled = isRouteSheetOpen) {
-        viewModel.setRouteSheetVisible(false)
+    // Handle back press to dismiss bottom sheet or reset to plain map
+    BackHandler(enabled = isRouteSheetOpen || isDestinationSelected) {
+        if (isRouteSheetOpen) {
+            viewModel.setRouteSheetVisible(false)
+        } else if (isDestinationSelected) {
+            viewModel.clearDestination()
+        }
     }
 
     Box(
@@ -127,9 +132,9 @@ fun RoutePlannerScreen(
                 .padding(top = 8.dp)
         )
 
-        // 3. Floating Bottom Route Peek Card (Only when a route is searched and modal sheet is closed)
+        // 3. Floating Bottom Route Peek Card (Only visible after destination is selected)
         AnimatedVisibility(
-            visible = hasActiveRoute && !isRouteSheetOpen,
+            visible = isDestinationSelected && !isRouteSheetOpen,
             enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
             exit = slideOutVertically(targetOffsetY = { it }) + fadeOut(),
             modifier = Modifier
@@ -159,13 +164,6 @@ fun RoutePlannerScreen(
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                             modifier = Modifier.weight(1f)
                         ) {
-                            val destIcon = when {
-                                destinationName.contains("Haven", ignoreCase = true) || destinationName.contains("Bi-Rite", ignoreCase = true) || destinationName.contains("Tartine", ignoreCase = true) -> Icons.Default.Storefront
-                                destinationName.contains("BART", ignoreCase = true) || destinationName.contains("Muni", ignoreCase = true) || destinationName.contains("Transit", ignoreCase = true) -> Icons.Default.DirectionsSubway
-                                destinationName.contains("Hospital", ignoreCase = true) || destinationName.contains("Pharmacy", ignoreCase = true) || destinationName.contains("Walgreens", ignoreCase = true) -> Icons.Default.Storefront
-                                destinationName.contains("Park", ignoreCase = true) || destinationName.contains("Square", ignoreCase = true) -> Icons.Default.Park
-                                else -> Icons.Default.Explore
-                            }
                             Box(
                                 modifier = Modifier
                                     .size(32.dp)
@@ -174,7 +172,7 @@ fun RoutePlannerScreen(
                                 contentAlignment = Alignment.Center
                             ) {
                                 Icon(
-                                    imageVector = destIcon,
+                                    imageVector = Icons.Default.Park,
                                     contentDescription = null,
                                     tint = VerifiedGreen,
                                     modifier = Modifier.size(18.dp)
@@ -212,22 +210,22 @@ fun RoutePlannerScreen(
                                 )
                             }
 
-                            // Dismiss/Clear Route Button
-                            Box(
-                                modifier = Modifier
-                                    .size(28.dp)
-                                    .clip(CircleShape)
-                                    .background(MistBlue)
-                                    .clickable { viewModel.clearActiveRoute() }
-                                    .testTag("peek_clear_route_button"),
-                                contentAlignment = Alignment.Center
+                            // Dismiss / Clear Destination Button
+                            IconButton(
+                                onClick = { viewModel.clearDestination() },
+                                modifier = Modifier.size(28.dp)
                             ) {
-                                Text("✕", style = MonospaceDataSm.copy(fontWeight = FontWeight.Bold), color = DeepSlateText)
+                                Icon(
+                                    imageVector = Icons.Default.Close,
+                                    contentDescription = "Clear Route",
+                                    tint = SlateMuted,
+                                    modifier = Modifier.size(18.dp)
+                                )
                             }
                         }
                     }
 
-                    // Stats strip with steps & calories
+                    // Stats strip
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -250,22 +248,16 @@ fun RoutePlannerScreen(
                             )
                             Text(text = "•", color = SlateLight)
                             Text(
-                                text = "~${selectedRoute.estimatedSteps} steps",
-                                style = MonospaceDataMd.copy(fontWeight = FontWeight.SemiBold),
+                                text = "Support-place availability unknown",
+                                style = Typography.bodySmall,
                                 color = VerifiedGreen
-                            )
-                            Text(text = "•", color = SlateLight)
-                            Text(
-                                text = "${selectedRoute.estimatedCalories} kcal",
-                                style = MonospaceDataMd,
-                                color = DeepSlateText
                             )
                         }
 
                         Text(
-                            text = "${selectedRoute.openHavensCount} Havens",
+                            text = "3 Route Options",
                             style = Typography.labelSmall.copy(fontWeight = FontWeight.SemiBold),
-                            color = VerifiedGreen
+                            color = SlateMuted
                         )
                     }
 
@@ -336,74 +328,36 @@ fun RoutePlannerScreen(
         }
 
         // 4. Modal Bottom Sheet for Route Options popping up over the background Google Map
-        if (isRouteSheetOpen) {
+        if (isRouteSheetOpen && isDestinationSelected) {
             RouteOptionsBottomSheet(
                 viewModel = viewModel,
                 onDismiss = { viewModel.setRouteSheetVisible(false) }
             )
         }
 
-        // 5. Disabled voice preview entry point
+        // 5. Floating "Hey Lighthouse" Voice Orb FAB
         Box(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(
-                    bottom = if (hasActiveRoute && !isRouteSheetOpen) 152.dp else 20.dp,
-                    end = 16.dp
-                )
-                .shadow(5.dp, RoundedCornerShape(24.dp))
-                .clip(RoundedCornerShape(24.dp))
-                .background(PureWhiteCard)
-                .border(1.5.dp, PrimaryActionBlue.copy(alpha = 0.6f), RoundedCornerShape(24.dp))
+                .padding(bottom = if (isRouteSheetOpen || !isDestinationSelected) 24.dp else 156.dp, end = 16.dp)
+                .shadow(6.dp, CircleShape)
+                .clip(CircleShape)
+                .background(PrimaryActionBlue)
+                .border(2.dp, PureWhiteCard, CircleShape)
                 .clickable { viewModel.startLiveVoiceSession() }
-                .padding(horizontal = 14.dp, vertical = 9.dp)
-                .testTag("floating_hey_lighthouse_orb")
+                .padding(14.dp)
+                .testTag("floating_hey_lighthouse_orb"),
+            contentAlignment = Alignment.Center
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(28.dp)
-                        .clip(CircleShape)
-                        .background(PrimaryActionBlue),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Mic,
-                        contentDescription = "Voice companion preview unavailable",
-                        tint = PureWhiteCard,
-                        modifier = Modifier.size(16.dp)
-                    )
-                }
-                Column {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        Text(
-                            text = "Voice preview",
-                            style = Typography.labelMedium.copy(fontWeight = FontWeight.Bold),
-                            color = DeepSlateText
-                        )
-                        Box(
-                            modifier = Modifier
-                                .size(6.dp)
-                                .clip(CircleShape)
-                                .background(SlateMuted)
-                        )
-                    }
-                    Text(
-                        text = "Not enabled in this build",
-                        style = MonospaceDataSm.copy(fontSize = 9.sp),
-                        color = SlateMuted
-                    )
-                }
-            }
+            Icon(
+                imageVector = Icons.Default.Mic,
+                contentDescription = "Hey Lighthouse - Talk to Gemini Live",
+                tint = PureWhiteCard,
+                modifier = Modifier.size(24.dp)
+            )
         }
 
-        // 6. Disabled voice preview modal
+        // 6. Gemini 3.8 Live Voice Modal
         if (isLiveVoiceOverlayVisible) {
             GeminiLiveVoiceModal(
                 viewModel = viewModel,

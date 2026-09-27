@@ -164,12 +164,12 @@ fun RouteOptionsSheetContent(
         ) {
             Column {
                 Text(
-                    text = "PEDESTRIAN SAFE ROUTES",
+                    text = "PEDESTRIAN ROUTE OPTIONS",
                     style = MonospaceDataSm.copy(fontSize = 11.sp, fontWeight = FontWeight.Bold),
                     color = PrimaryActionBlue
                 )
                 Text(
-                    text = "Civic Illumination & Shade Model",
+                    text = "Civic Evidence & Route Review",
                     style = Typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                     color = DeepSlateText
                 )
@@ -508,7 +508,7 @@ fun RouteOptionsSheetContent(
                 onClick = { viewModel.setActiveCivicLayer("CURB") }
             )
             FilterChipItem(
-                label = "Open Cafes / Havens",
+                label = "Cafes & Storefronts",
                 icon = Icons.Default.LocalCafe,
                 isSelected = activeCivicLayer == "HAVENS",
                 onClick = { viewModel.setActiveCivicLayer("HAVENS") }
@@ -530,12 +530,12 @@ fun RouteOptionsSheetContent(
             verticalAlignment = Alignment.Bottom
         ) {
             Text(
-                text = if (dayNightMode == DayNightMode.DAY) "LIVE PEDESTRIAN OPTIONS" else "NIGHT CORRIDORS",
+                text = if (dayNightMode == DayNightMode.DAY) "DAY ROUTE OPTIONS" else "NIGHT ROUTE OPTIONS",
                 style = Typography.labelLarge.copy(letterSpacing = 1.sp),
                 color = DeepSlateText
             )
             Text(
-                text = if (dayNightMode == DayNightMode.DAY) "Synced 2m ago" else "Ranked by Illumination",
+                text = if (dayNightMode == DayNightMode.DAY) "Shade data unavailable" else "Streetlight assets mapped",
                 style = MonospaceDataSm,
                 color = SlateMuted
             )
@@ -591,9 +591,9 @@ fun RouteOptionsSheetContent(
                 )
                 Text(
                     text = if (dayNightMode == DayNightMode.DAY) {
-                        "Start Day Walk (Best Conditions)"
+                        "Start Walk (Valencia · 14 min)"
                     } else {
-                        "Start Safe Night Walk (Valencia · 16 min)"
+                        "Start Walk (Valencia · 16 min)"
                     },
                     style = Typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                     color = PureWhiteCard
@@ -663,7 +663,7 @@ fun RouteOptionsSheetContent(
                 text = if (dayNightMode == DayNightMode.DAY) {
                     "SF 311 & Urban Forestry tree data • Real-world conditions vary"
                 } else {
-                    "SFPUC Smart Lighting + SF 311 active logs. Verified physical fixtures."
+                    "SFPUC asset inventory + SF 311 source link • Working status and current reports unknown"
                 },
                 style = MonospaceDataSm.copy(fontSize = 10.sp),
                 color = SlateMuted

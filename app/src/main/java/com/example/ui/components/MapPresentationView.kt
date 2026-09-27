@@ -208,7 +208,7 @@ fun MapPresentationView(
                 }
             }
 
-            // Bi-Rite Safe Haven Badge
+            // Bi-Rite Storefront Badge
             Box(
                 modifier = Modifier
                     .align(Alignment.CenterStart)
@@ -229,7 +229,7 @@ fun MapPresentationView(
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        text = "Bi-Rite Safe Haven",
+                        text = "Bi-Rite Storefront",
                         style = MonospaceDataSm,
                         color = DeepSlateText
                     )
@@ -284,39 +284,18 @@ fun MapPresentationView(
                             modifier = Modifier
                                 .size(8.dp)
                                 .clip(CircleShape)
-                                .background(VerifiedGreen)
+                                .background(MistBlue)
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
-                            text = "68% Shaded",
+                            text = "Shade data unavailable",
                             style = MonospaceDataSm,
                             color = DeepSlateText
                         )
                     }
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Box(
-                            modifier = Modifier
-                                .size(8.dp)
-                                .clip(CircleShape)
-                                .background(WarningAmber)
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
                         Text(
-                            text = "22% Partial",
-                            style = MonospaceDataSm,
-                            color = DeepSlateText
-                        )
-                    }
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Box(
-                            modifier = Modifier
-                                .size(8.dp)
-                                .clip(CircleShape)
-                                .background(SlateLight)
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = "10% Sun",
+                            text = "Status: UNKNOWN",
                             style = MonospaceDataSm,
                             color = SlateMuted
                         )
@@ -376,14 +355,14 @@ fun MapPresentationView(
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        text = "Bi-Rite (Haven · 11 PM)",
+                        text = "Bi-Rite Storefront",
                         style = MonospaceDataSm,
                         color = DeepSlateText
                     )
                 }
             }
 
-            // Patrol Tracker Badge
+            // Mapped Corridor Badge
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
@@ -404,7 +383,7 @@ fun MapPresentationView(
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        text = "Dolores safety patrol on-route",
+                        text = "Valencia mapped pedestrian path",
                         style = MonospaceDataSm,
                         color = PureWhiteCard
                     )
@@ -435,7 +414,7 @@ fun MapPresentationView(
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
-                            text = "Well-lit (SFPUC)",
+                            text = "Mapped (SFPUC)",
                             style = MonospaceDataSm,
                             color = DeepSlateText
                         )
@@ -492,7 +471,7 @@ fun MapPresentationView(
                         modifier = Modifier.size(18.dp)
                     )
                     Text(
-                        text = "Live check: 19th St construction bypass active. Path locked on illuminated 18th St.",
+                        text = "Valencia Corridor waypoint path mapped to Mission Dolores Park.",
                         style = Typography.bodySmall,
                         color = DeepSlateText
                     )
@@ -541,7 +520,7 @@ fun MapPresentationView(
                             .padding(horizontal = 8.dp, vertical = 4.dp)
                     ) {
                         Text(
-                            text = "CORRIDOR: 98.4% AMBIENT LUX",
+                            text = "CORRIDOR: VALENCIA STREET",
                             style = MonospaceDataSm,
                             color = DeepSlateText
                         )

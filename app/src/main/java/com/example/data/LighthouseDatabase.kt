@@ -53,79 +53,47 @@ abstract class LighthouseDatabase : RoomDatabase() {
         }
 
         suspend fun populateInitialData(dao: LighthouseDao) {
-            // Seed initial safety contacts
-            dao.insertContacts(
-                listOf(
-                    SafetyContactEntity(
-                        name = "Maya Lin (Mom)",
-                        relationship = "Mother · Primary Guardian",
-                        phoneNumber = "+1 (415) 555-0192",
-                        batteryPercent = 82,
-                        isSharingGps = true,
-                        isPrimary = true
-                    ),
-                    SafetyContactEntity(
-                        name = "Sarah Chen",
-                        relationship = "Trusted Friend",
-                        phoneNumber = "+1 (415) 555-0144",
-                        batteryPercent = 94,
-                        isSharingGps = true,
-                        isPrimary = false
-                    )
-                )
-            )
-
-            // Seed real civic & community reports
+            // Seed sample pedestrian observations clearly marked as unverified samples
             dao.insertReports(
                 listOf(
                     CommunityReportEntity(
-                        title = "Streetlight Dark on 17th St",
-                        description = "Streetlight fixture dark on 17th St between Mission & Valencia. SFPUC crew dispatched.",
+                        title = "Reported Dark Fixture on 17th St",
+                        description = "Pedestrian observation of dark streetlight fixture near 17th St. Check SF 311 for recent service tickets.",
                         category = "OUTAGES",
-                        source = "SF 311 • Official Ticket #89214",
-                        timeAgo = "14m ago",
-                        status = "Utility Dispatched",
+                        source = "Sample • not live",
+                        timeAgo = "Sample",
+                        status = "Unverified Sample",
                         location = "17th St between Mission & Valencia",
-                        verified = true
+                        verified = false
                     ),
                     CommunityReportEntity(
-                        title = "16th St Mission West Elevator",
-                        description = "OPERATIONAL. Concourse step-free clearance verified by automated continuous telemetry.",
+                        title = "16th St Mission Concourse Access",
+                        description = "Station concourse elevator access. Real-time telemetry feed not connected.",
                         category = "TRANSIT",
-                        source = "BART API & SF 511 • Real-time",
-                        timeAgo = "3m ago",
-                        status = "Active Verification",
+                        source = "Sample • not live",
+                        timeAgo = "Sample",
+                        status = "Unverified Sample",
                         location = "16th St Mission BART Station",
-                        verified = true
+                        verified = false
                     ),
                     CommunityReportEntity(
-                        title = "Paired Transit Ambassadors On Duty",
-                        description = "Stationed at 16th & Mission concourse. Walking escorts available along the 16th-Valencia pedestrian corridor.",
-                        category = "COMMUNITY",
-                        source = "SFMTA Ambassador Program",
-                        timeAgo = "Active shift until 11:30 PM",
-                        status = "Staff Present",
-                        location = "16th & Mission Concourse",
-                        verified = true
-                    ),
-                    CommunityReportEntity(
-                        title = "Bi-Rite Creamery (18th & Dolores)",
-                        description = "Open until 11:00 PM. Well-lit entryway, public emergency landline, and CPR-trained staff present on premises.",
+                        title = "Bi-Rite Creamery Storefront",
+                        description = "Neighborhood storefront. Live operating hours and staffing unverified by feed.",
                         category = "HAVEN",
-                        source = "Lighthouse Partner Haven #44",
-                        timeAgo = "Confirmed Haven",
-                        status = "Open · Safe Haven",
+                        source = "Sample • not live",
+                        timeAgo = "Sample",
+                        status = "Unverified Sample",
                         location = "3692 18th St",
-                        verified = true
+                        verified = false
                     ),
                     CommunityReportEntity(
-                        title = "Sidewalk Pinch Point on Guerrero",
-                        description = "Guerrero St sidewalk scaffolding creates a narrow squeeze for wheelchairs & strollers. Recommend crossing to East sidewalk.",
+                        title = "Sidewalk Scaffolding on Guerrero",
+                        description = "Community observation noting narrow pathway near scaffolding on Guerrero St.",
                         category = "ACCESSIBILITY",
-                        source = "Pedestrian Observation • Opt-in Community",
-                        timeAgo = "28m ago",
-                        status = "Community Alert",
-                        confirmations = 8,
+                        source = "Sample • not live",
+                        timeAgo = "Sample",
+                        status = "Unverified Sample",
+                        confirmations = 2,
                         location = "Guerrero St & 17th St",
                         verified = false
                     )
