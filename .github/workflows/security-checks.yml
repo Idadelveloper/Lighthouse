@@ -19,5 +19,7 @@ jobs:
         run: ./scripts/security/test_android_secret_boundary.sh
       - name: Check App Check source configuration
         run: ./scripts/security/test_firebase_security_config.sh
+      - name: Check Android privacy boundary
+        run: ./scripts/security/test_android_privacy_boundary.sh
       - name: Scan working tree and Git history
         run: ./scripts/security/secret_scan.sh --all

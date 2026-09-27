@@ -11,69 +11,32 @@ import java.io.File
 
 class GeminiSecurityGuardTest {
 
-    private val companion = GeminiSafetyCompanion()
-
     @Test
-    fun `guard - GeminiSafetyCompanion has no client api key field or remote url field`() {
-        val fields = GeminiSafetyCompanion::class.java.declaredFields
-        val fieldNames = fields.map { it.name.lowercase() }
-
-        assertFalse("GeminiSafetyCompanion must not have an apiKey field", fieldNames.any { it.contains("apikey") })
-        assertFalse("GeminiSafetyCompanion must not have an okhttp client field", fieldNames.any { it == "client" })
-    }
-
-    @Test
-    fun `guard - fail-closed deterministic companion responds without network or keys`() = runBlocking {
+    fun `public companion returns unavailable and cannot mutate navigation`() = runBlocking {
+        val companion = GeminiSafetyCompanion()
         val response = companion.converseWithLive(
-            userQuery = "Take me to Dolores Park",
-            currentOrigin = "16th St Mission BART",
-            currentDestination = "Mission Dolores Park",
-            dayNightMode = DayNightMode.DAY,
-            activeRoute = null,
-            allRoutes = emptyList()
-        )
-
-        assertNotNull(response)
-        assertTrue(response.spokenText.contains("Dolores Park", ignoreCase = true))
-        assertEquals(GeminiAction.SET_DESTINATION, response.actionType)
-        assertEquals("Mission Dolores Park", response.actionTarget)
-    }
-
-    @Test
-    fun `guard - fail-closed companion handles safe havens and route actions`() = runBlocking {
-        val tartineResponse = companion.converseWithLive(
-            userQuery = "Where is Tartine Bakery?",
-            currentOrigin = "16th St Mission BART",
-            currentDestination = "Mission Dolores Park",
-            dayNightMode = DayNightMode.DAY,
-            activeRoute = null,
-            allRoutes = emptyList()
-        )
-        assertEquals(GeminiAction.SET_DESTINATION, tartineResponse.actionType)
-        assertEquals("Tartine Bakery", tartineResponse.actionTarget)
-
-        val fastestResponse = companion.converseWithLive(
             userQuery = "Switch to the fastest route",
-            currentOrigin = "16th St Mission BART",
-            currentDestination = "Mission Dolores Park",
+            currentOrigin = "Origin",
+            currentDestination = "Destination",
             dayNightMode = DayNightMode.NIGHT,
             activeRoute = null,
             allRoutes = emptyList()
         )
-        assertEquals(GeminiAction.SWITCH_ROUTE, fastestResponse.actionType)
-        assertEquals("night_fastest", fastestResponse.actionTarget)
+
+        assertEquals(GeminiLiveAudioEngine.UNAVAILABLE_MESSAGE, response.spokenText)
+        assertEquals(GeminiAction.NONE, response.actionType)
+        assertEquals("", response.actionTarget)
+        assertEquals(GeminiLiveAudioEngine.UNAVAILABLE_MESSAGE, companion.askCompanion("hello"))
     }
 
     @Test
-    fun `guard - source files contain no durable Gemini API key or direct key url calls`() {
+    fun `source contains no durable Gemini key or direct Gemini REST path`() {
         val rootDir = File(".").canonicalFile
-        val mainJavaDir = File(rootDir, "src/main/java")
-        val candidateDirs = listOf(
-            mainJavaDir,
+        val sourceDir = listOf(
+            File(rootDir, "src/main/java"),
             File(rootDir, "app/src/main/java")
-        )
-        val sourceDir = candidateDirs.firstOrNull { it.exists() && it.isDirectory }
-        assertNotNull("Main Java directory must exist for security audit", sourceDir)
+        ).firstOrNull { it.exists() && it.isDirectory }
+        assertNotNull("Main Java directory must exist", sourceDir)
 
         val forbiddenTokens = listOf(
             "BuildConfig.GEMINI_API_KEY",
@@ -85,7 +48,7 @@ class GeminiSecurityGuardTest {
             val content = sourceFile.readText()
             forbiddenTokens.forEach { token ->
                 assertFalse(
-                    "Security violation: ${sourceFile.name} contains forbidden durable key token '$token'",
+                    "Security violation: ${sourceFile.name} contains forbidden token '$token'",
                     content.contains(token)
                 )
             }
@@ -93,23 +56,16 @@ class GeminiSecurityGuardTest {
     }
 
     @Test
-    fun `guard - env example does not contain GEMINI_API_KEY`() {
+    fun `env example contains only the Maps placeholder`() {
         val rootDir = File(".").canonicalFile
-        val candidateFiles = listOf(
+        val envExampleFile = listOf(
             File(rootDir, ".env.example"),
             File(rootDir, "../.env.example")
-        )
-        val envExampleFile = candidateFiles.firstOrNull { it.exists() }
+        ).firstOrNull { it.exists() }
         assertNotNull(".env.example must exist", envExampleFile)
 
-        val content = envExampleFile?.readText() ?: ""
-        assertFalse(
-            "Security violation: .env.example must not expose GEMINI_API_KEY",
-            content.contains("GEMINI_API_KEY")
-        )
-        assertTrue(
-            ".env.example should retain MAPS_API_KEY placeholder",
-            content.contains("MAPS_API_KEY")
-        )
+        val content = envExampleFile?.readText().orEmpty()
+        assertFalse(content.contains("GEMINI_API_KEY"))
+        assertTrue(content.contains("MAPS_API_KEY"))
     }
 }
