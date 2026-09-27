@@ -93,6 +93,8 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
+import androidx.compose.ui.platform.LocalDensity
 import com.google.maps.android.compose.Circle
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
@@ -110,11 +112,13 @@ fun GoogleMapView(
     modifier: Modifier = Modifier,
     isInteractive: Boolean = true,
     showControls: Boolean = true,
+    isActiveWalk: Boolean = false,
     onMapClick: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
+    val isDestinationSelected by viewModel.isDestinationSelected.collectAsStateWithLifecycle()
     val dayNightMode by viewModel.dayNightMode.collectAsStateWithLifecycle()
     val selectedDayId by viewModel.selectedDayRouteId.collectAsStateWithLifecycle()
     val selectedNightId by viewModel.selectedNightRouteId.collectAsStateWithLifecycle()
@@ -127,25 +131,11 @@ fun GoogleMapView(
     val selectedHaven by viewModel.selectedSafeHaven.collectAsStateWithLifecycle()
     val activeRouteData by viewModel.activeRouteData.collectAsStateWithLifecycle()
     val selectedSamplePoint by viewModel.selectedSamplePoint.collectAsStateWithLifecycle()
-    val hasActiveRoute by viewModel.hasActiveRoute.collectAsStateWithLifecycle()
-    val cameraMoveTarget by viewModel.cameraMoveTarget.collectAsStateWithLifecycle()
-    val computedPolyline by viewModel.computedPolyline.collectAsStateWithLifecycle()
 
-    // Camera positioning focused on SF Mission District
-    val defaultCenter = LatLng(37.7630, -122.4230)
+    // Camera positioning focused strictly on SF Mission District corridor (never whole SF)
+    val defaultCenter = LatLng(37.7633, -122.4228)
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(defaultCenter, 15.2f)
-    }
-
-    // Animate camera when user searches and selects a location
-    LaunchedEffect(cameraMoveTarget) {
-        cameraMoveTarget?.let { target ->
-            cameraPositionState.animate(
-                CameraUpdateFactory.newLatLngZoom(target, 16.2f),
-                durationMs = 900
-            )
-            viewModel.onCameraMoved()
-        }
+        position = CameraPosition.fromLatLngZoom(defaultCenter, 15.8f)
     }
 
     // Permission launcher for Live GPS location
@@ -191,21 +181,17 @@ fun GoogleMapView(
         }
     }
 
-    // Select polyline path based on dynamic calculation, bundle active route, or fallback
-    val currentPolyline = remember(activeRouteData, computedPolyline, originLatLng, dayNightMode) {
-        if (computedPolyline.isNotEmpty()) {
-            computedPolyline
-        } else {
-            val path = activeRouteData?.path
-            if (!path.isNullOrEmpty()) {
-                if (isUsingCurrentLocation) {
-                    listOf(originLatLng) + path
-                } else {
-                    path
-                }
+    // Select polyline path based on bundle active route or fallback
+    val currentPolyline = remember(activeRouteData, originLatLng, dayNightMode) {
+        val path = activeRouteData?.path
+        if (!path.isNullOrEmpty()) {
+            if (isUsingCurrentLocation) {
+                listOf(originLatLng) + path
             } else {
-                if (dayNightMode == DayNightMode.DAY) MapDataDefaults.dayBestPolyline else MapDataDefaults.nightIlluminatedPolyline
+                path
             }
+        } else {
+            if (dayNightMode == DayNightMode.DAY) MapDataDefaults.dayBestPolyline else MapDataDefaults.nightIlluminatedPolyline
         }
     }
 
@@ -213,6 +199,33 @@ fun GoogleMapView(
         PrimaryActionBlue
     } else {
         StreetlightLitYellow
+    }
+
+    // Fit camera to origin, destination, and route polyline with 80dp padding in preview and active walk
+    val density = LocalDensity.current
+    val paddingPx = with(density) { 80.dp.roundToPx() }
+
+    LaunchedEffect(currentPolyline, originLatLng, destinationLatLng, isDestinationSelected, isActiveWalk) {
+        if ((isDestinationSelected || isActiveWalk) && currentPolyline.isNotEmpty()) {
+            try {
+                val builder = LatLngBounds.builder()
+                builder.include(originLatLng)
+                builder.include(destinationLatLng)
+                currentPolyline.forEach { builder.include(it) }
+                val bounds = builder.build()
+                cameraPositionState.animate(
+                    CameraUpdateFactory.newLatLngBounds(bounds, paddingPx),
+                    durationMs = 600
+                )
+            } catch (_: Exception) {
+                val builder = LatLngBounds.builder()
+                builder.include(originLatLng)
+                builder.include(destinationLatLng)
+                currentPolyline.forEach { builder.include(it) }
+                val bounds = builder.build()
+                cameraPositionState.position = CameraPosition.fromLatLngZoom(bounds.center, 15.6f)
+            }
+        }
     }
 
     // Pulse animation for Live GPS dot
@@ -237,7 +250,7 @@ fun GoogleMapView(
             modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState,
             properties = MapProperties(
-                isMyLocationEnabled = false, // We render custom safe beacon dot
+                isMyLocationEnabled = false,
                 mapType = MapType.NORMAL,
                 isTrafficEnabled = false
             ),
@@ -252,101 +265,64 @@ fun GoogleMapView(
                 onMapClick()
             }
         ) {
-            // 1. Origin Marker
-            if (hasActiveRoute || isUsingCurrentLocation) {
+            // Overlays and landmarks along visible route only when destination is selected or during active walk
+            if (isDestinationSelected || isActiveWalk) {
+                // 1. Visible Walk Polyline
+                Polyline(
+                    points = currentPolyline,
+                    color = polylineColor,
+                    width = 12f
+                )
+
+                // At most three compact landmark markers along the visible route:
+                // 1. 16th St Mission BART
                 Marker(
                     state = MarkerState(position = originLatLng),
-                    title = originName,
-                    snippet = if (isUsingCurrentLocation) "Your Live GPS Point" else "Start: Transit Connection",
-                    icon = BitmapDescriptorFactory.defaultMarker(
-                        if (isUsingCurrentLocation) BitmapDescriptorFactory.HUE_AZURE else BitmapDescriptorFactory.HUE_BLUE
-                    )
+                    title = "16th St BART",
+                    snippet = "Start • Transit Connection",
+                    icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)
                 )
-            }
 
-            // 2. Destination Marker (Only when route is active)
-            if (hasActiveRoute) {
+                // 2. Recognizable Intermediate Landmark: Tartine Bakery (18th & Guerrero)
+                val intermediateLandmark = LatLng(37.76142, -122.42412)
+                Marker(
+                    state = MarkerState(position = intermediateLandmark),
+                    title = "Tartine Bakery",
+                    snippet = "18th & Guerrero Waypoint",
+                    icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)
+                )
+
+                // 3. Mission Dolores Park Entrance
                 Marker(
                     state = MarkerState(position = destinationLatLng),
-                    title = destinationName,
-                    snippet = "Pedestrian Safe Destination",
+                    title = "Dolores Park",
+                    snippet = "18th & Dolores Entrance",
+                    icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)
+                )
+            } else {
+                // Plain map: Show compact landmark indicators without route polylines or clutter
+                Marker(
+                    state = MarkerState(position = MapDataDefaults.BART_16TH),
+                    title = "16th St BART",
+                    snippet = "16th St Mission Station",
+                    icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)
+                )
+                Marker(
+                    state = MarkerState(position = MapDataDefaults.DOLORES_PARK),
+                    title = "Dolores Park",
+                    snippet = "Mission Dolores Park",
                     icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)
                 )
             }
 
-            // 3. Active Walk Polyline (Route highlight - Only when route is active)
-            if (hasActiveRoute) {
-                Polyline(
-                    points = currentPolyline,
-                    color = polylineColor,
-                    width = 14f
-                )
-            }
-
-            // 4. Safe Haven Markers
-            MapDataDefaults.safeHavens.forEach { haven ->
-                Marker(
-                    state = MarkerState(position = haven.position),
-                    title = haven.name,
-                    snippet = "${haven.hours} • Tap for details",
-                    icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE),
-                    onClick = {
-                        viewModel.selectSafeHaven(haven)
-                        true
-                    }
-                )
-
-                // Safe Haven halo buffer circle
-                Circle(
-                    center = haven.position,
-                    radius = 45.0, // 45 meters safe perimeter
-                    fillColor = VerifiedGreen.copy(alpha = 0.12f),
-                    strokeColor = VerifiedGreen.copy(alpha = 0.4f),
-                    strokeWidth = 2f
-                )
-            }
-
-            // 5. 17th St Outage Marker (Night mode only)
-            if (dayNightMode == DayNightMode.NIGHT) {
-                Marker(
-                    state = MarkerState(position = MapDataDefaults.OUTAGE_17TH),
-                    title = "SF 311 Outage Alert",
-                    snippet = "Reported 3h ago: Dim light pole on 17th",
-                    icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)
-                )
-            }
-
-            // 6. User Live Location Marker (if available)
+            // User Live Location Marker (if available) - compact beacon, no raw polygons or safety zones
             userLiveLocation?.let { loc ->
-                Circle(
-                    center = loc,
-                    radius = 28.0,
-                    fillColor = PrimaryActionBlue.copy(alpha = pulseAlpha),
-                    strokeColor = PrimaryActionBlue.copy(alpha = 0.5f),
-                    strokeWidth = 2f
-                )
                 Marker(
                     state = MarkerState(position = loc),
                     title = "You Are Here",
-                    snippet = "Live Pedestrian GPS Beacon",
+                    snippet = "Live GPS Beacon",
                     icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)
                 )
-            }
-
-            // 7. Street View Sample Points (35m audit markers - Only when route active)
-            if (hasActiveRoute) {
-                activeRouteData?.samples?.forEachIndexed { index, sample ->
-                    Marker(
-                        state = MarkerState(position = sample.latLng),
-                        title = "Street View #${index + 1}",
-                        snippet = sample.score?.note ?: "Tap to inspect Street View photo & Gemini audit",
-                        icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET),
-                        onClick = {
-                            viewModel.selectSamplePoint(sample)
-                            true
-                        }
-                    )
-                }
             }
         }
 
