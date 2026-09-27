@@ -98,7 +98,7 @@ class LighthouseViewModel(application: Application) : AndroidViewModel(applicati
     val audioRms: StateFlow<Float> = audioEngine.audioRms
 
     private val _geminiLiveVoiceResponse = MutableStateFlow(
-        "I am your Gemini Live safety companion. Say \"Hey Lighthouse\" or ask for safe routes, turns, or havens."
+        com.example.service.GeminiLiveAudioEngine.UNAVAILABLE_MESSAGE
     )
     val geminiLiveVoiceResponse: StateFlow<String> = _geminiLiveVoiceResponse.asStateFlow()
 
@@ -779,7 +779,11 @@ class LighthouseViewModel(application: Application) : AndroidViewModel(applicati
 
     fun toggleAiMute() {
         _isAiMuted.value = !_isAiMuted.value
-        val msg = if (_isAiMuted.value) "AI Voice companion muted" else "AI Voice companion listening"
+        val msg = if (_isAiMuted.value) {
+            "Voice preview muted"
+        } else {
+            com.example.service.GeminiLiveAudioEngine.UNAVAILABLE_MESSAGE
+        }
         showToast(msg)
     }
 
@@ -787,7 +791,7 @@ class LighthouseViewModel(application: Application) : AndroidViewModel(applicati
         _showEvidenceSheet.value = visible
     }
 
-    // Gemini 3.8 Live Voice Session Actions
+    // Public-build voice boundary. The engine is deliberately disabled.
     fun startLiveVoiceSession() {
         _isLiveVoiceOverlayVisible.value = true
         vibratePhone(40)
@@ -807,80 +811,10 @@ class LighthouseViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 
-    fun processLiveVoiceInput(spokenQuery: String) {
-        viewModelScope.launch {
-            _isGeminiThinking.value = true
-            audioEngine.setProcessing()
-            vibratePhone(30)
-
-            val currentRoutes = if (_dayNightMode.value == DayNightMode.DAY) dayRoutes else nightRoutes
-            val activeRouteId = if (_dayNightMode.value == DayNightMode.DAY) _selectedDayRouteId.value else _selectedNightRouteId.value
-            val activeRoute = currentRoutes.find { it.id == activeRouteId }
-
-            val response = geminiCompanion.converseWithLive(
-                userQuery = spokenQuery,
-                currentOrigin = _originName.value,
-                currentDestination = _destinationName.value,
-                dayNightMode = _dayNightMode.value,
-                activeRoute = activeRoute,
-                allRoutes = currentRoutes,
-                stepsWalked = _walkSteps.value,
-                caloriesBurned = _walkCalories.value
-            )
-
-            _geminiLiveVoiceResponse.value = response.spokenText
-            _isGeminiThinking.value = false
-
-            // Execute structured conversational action
-            when (response.actionType) {
-                com.example.service.GeminiAction.SET_DESTINATION -> {
-                    val destName = response.actionTarget.ifBlank { "Mission Dolores Park" }
-                    val matchedPlace = com.example.model.MapDataDefaults.searchSuggestions.find {
-                        it.title.contains(destName, ignoreCase = true)
-                    }
-                    if (matchedPlace != null) {
-                        _destinationName.value = matchedPlace.title
-                        _destinationLatLng.value = matchedPlace.position
-                    } else {
-                        _destinationName.value = destName
-                        _destinationLatLng.value = com.example.model.MapDataDefaults.DOLORES_PARK
-                    }
-                    _hasActiveRoute.value = true
-                    _isRouteSheetOpen.value = true
-                }
-                com.example.service.GeminiAction.SWITCH_ROUTE -> {
-                    if (response.actionTarget.isNotBlank()) {
-                        if (_dayNightMode.value == DayNightMode.DAY) {
-                            _selectedDayRouteId.value = response.actionTarget
-                        } else {
-                            _selectedNightRouteId.value = response.actionTarget
-                        }
-                    }
-                }
-                com.example.service.GeminiAction.START_WALK -> {
-                    _hasActiveRoute.value = true
-                    _currentTab.value = NavTab.WALK
-                    _isRouteSheetOpen.value = false
-                    startStepTracking()
-                }
-                com.example.service.GeminiAction.READ_NEXT_CUE -> {
-                    // Turn cue read out loud by Gemini
-                }
-                com.example.service.GeminiAction.SAFE_HAVEN_INFO -> {
-                    val haven = com.example.model.MapDataDefaults.safeHavens.firstOrNull()
-                    _selectedSafeHaven.value = haven
-                }
-                com.example.service.GeminiAction.CRISIS_PROTOCOL -> {
-                    vibratePhone(600)
-                    showToast("Direct Safety Protocol Active • Line kept open")
-                }
-                com.example.service.GeminiAction.NONE -> {}
-            }
-
-            // Speak out the guidance into earbuds/speaker
-            audioEngine.speak(response.spokenText)
-            vibratePhone(60)
-        }
+    fun processLiveVoiceInput(@Suppress("UNUSED_PARAMETER") spokenQuery: String) {
+        _isGeminiThinking.value = false
+        _geminiLiveVoiceResponse.value = com.example.service.GeminiLiveAudioEngine.UNAVAILABLE_MESSAGE
+        showToast(com.example.service.GeminiLiveAudioEngine.UNAVAILABLE_MESSAGE)
     }
 
     override fun onCleared() {

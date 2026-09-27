@@ -343,7 +343,7 @@ fun RoutePlannerScreen(
             )
         }
 
-        // 5. Floating "Hey Lighthouse" Voice Capsule (blends smoothly into the bottom of the UI)
+        // 5. Disabled voice preview entry point
         Box(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
@@ -372,7 +372,7 @@ fun RoutePlannerScreen(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Mic,
-                        contentDescription = "Hey Lighthouse - Talk to Gemini Live",
+                        contentDescription = "Voice companion preview unavailable",
                         tint = PureWhiteCard,
                         modifier = Modifier.size(16.dp)
                     )
@@ -383,7 +383,7 @@ fun RoutePlannerScreen(
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         Text(
-                            text = "“Hey Lighthouse”",
+                            text = "Voice preview",
                             style = Typography.labelMedium.copy(fontWeight = FontWeight.Bold),
                             color = DeepSlateText
                         )
@@ -391,11 +391,11 @@ fun RoutePlannerScreen(
                             modifier = Modifier
                                 .size(6.dp)
                                 .clip(CircleShape)
-                                .background(VerifiedGreen)
+                                .background(SlateMuted)
                         )
                     }
                     Text(
-                        text = "Gemini Live Audio",
+                        text = "Not enabled in this build",
                         style = MonospaceDataSm.copy(fontSize = 9.sp),
                         color = SlateMuted
                     )
@@ -403,7 +403,7 @@ fun RoutePlannerScreen(
             }
         }
 
-        // 6. Gemini 3.8 Live Voice Modal
+        // 6. Disabled voice preview modal
         if (isLiveVoiceOverlayVisible) {
             GeminiLiveVoiceModal(
                 viewModel = viewModel,

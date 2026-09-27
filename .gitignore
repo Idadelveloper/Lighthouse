@@ -15,4 +15,15 @@
 .cxx
 local.properties
 .env
-debug.keystore
+*.keystore
+*.jks
+google-services.json
+service-account*.json
+credentials.json
+*.pem
+
+# Local configuration variants and build artifacts
+.env.*
+!.env.example
+*.apk
+*.aab

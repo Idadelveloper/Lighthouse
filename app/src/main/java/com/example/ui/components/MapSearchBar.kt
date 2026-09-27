@@ -199,7 +199,7 @@ fun MapSearchBar(
                             }
                         }
 
-                        // Gemini 3.8 Live Voice Button
+                        // Disabled voice preview entry point
                         IconButton(
                             onClick = {
                                 viewModel.startLiveVoiceSession()
@@ -208,7 +208,7 @@ fun MapSearchBar(
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Mic,
-                                contentDescription = "Hey Lighthouse - Talk to Gemini Live",
+                                contentDescription = "Voice companion preview unavailable",
                                 tint = PrimaryActionBlue,
                                 modifier = Modifier.size(20.dp)
                             )
@@ -533,7 +533,7 @@ fun MapSearchBar(
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 QuickSearchChip(
-                    label = "Hey Lighthouse",
+                    label = "Voice preview",
                     icon = Icons.Default.GraphicEq,
                     isSelected = true,
                     onClick = {

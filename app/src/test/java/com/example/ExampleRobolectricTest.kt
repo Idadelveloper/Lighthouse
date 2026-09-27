@@ -116,43 +116,24 @@ class ExampleRobolectricTest {
     }
 
     @Test
-    fun `verify gemini live persona confirmation and crisis detection`() = kotlinx.coroutines.runBlocking {
+    fun `verify public voice companion fails closed for navigation and crisis phrases`() = kotlinx.coroutines.runBlocking {
         val companion = com.example.service.GeminiSafetyCompanion()
 
-        // 1. Destination request asks for confirmation before navigation
-        val destResponse = companion.converseWithLive(
-            userQuery = "Lighthouse, find me a safe walk back to the train station",
-            currentOrigin = "Valencia St",
-            currentDestination = "Mission Dolores Park",
-            dayNightMode = DayNightMode.DAY,
-            activeRoute = null,
-            allRoutes = emptyList()
-        )
-        assert(destResponse.spokenText.contains("Should I start navigation?", ignoreCase = true))
-        assertEquals(com.example.service.GeminiAction.SET_DESTINATION, destResponse.actionType)
-
-        // 2. User confirms navigation starts walk
-        val confirmResponse = companion.converseWithLive(
-            userQuery = "Yes, start navigation",
-            currentOrigin = "Valencia St",
-            currentDestination = "Mission Dolores Park",
-            dayNightMode = DayNightMode.DAY,
-            activeRoute = null,
-            allRoutes = emptyList()
-        )
-        assertEquals(com.example.service.GeminiAction.START_WALK, confirmResponse.actionType)
-
-        // 3. Crisis detector triggers crisis protocol and keeps line open
-        val crisisResponse = companion.converseWithLive(
-            userQuery = "Someone is following me, I feel unsafe",
-            currentOrigin = "Valencia St",
-            currentDestination = "Mission Dolores Park",
-            dayNightMode = DayNightMode.DAY,
-            activeRoute = null,
-            allRoutes = emptyList()
-        )
-        assertEquals(com.example.service.GeminiAction.CRISIS_PROTOCOL, crisisResponse.actionType)
-        assert(crisisResponse.spokenText.contains("staying on the line", ignoreCase = true) ||
-                crisisResponse.spokenText.contains("safe", ignoreCase = true))
+        listOf(
+            "Lighthouse, find me a safe walk back to the train station",
+            "Yes, start navigation",
+            "Someone is following me, I feel unsafe"
+        ).forEach { query ->
+            val response = companion.converseWithLive(
+                userQuery = query,
+                currentOrigin = "Valencia St",
+                currentDestination = "Mission Dolores Park",
+                dayNightMode = DayNightMode.DAY,
+                activeRoute = null,
+                allRoutes = emptyList()
+            )
+            assertEquals(com.example.service.GeminiLiveAudioEngine.UNAVAILABLE_MESSAGE, response.spokenText)
+            assertEquals(com.example.service.GeminiAction.NONE, response.actionType)
+        }
     }
 }

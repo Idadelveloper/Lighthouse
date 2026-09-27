@@ -398,13 +398,15 @@ fun ActiveWalkScreen(
             isActiveWalk = true
         )
 
-        // 3. Pocket Voice Mode Quick Launcher Banner
+        // 3. Disabled pocket-voice preview
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(14.dp))
                 .background(DeepSlateDark)
-                .clickable { viewModel.togglePocketMode(true) }
+                .clickable {
+                    viewModel.showToast(com.example.service.GeminiLiveAudioEngine.UNAVAILABLE_MESSAGE)
+                }
                 .padding(horizontal = 14.dp, vertical = 10.dp)
                 .testTag("enter_pocket_mode_button")
         ) {
@@ -433,12 +435,12 @@ fun ActiveWalkScreen(
                     }
                     Column {
                         Text(
-                            text = "Switch to Pocket Voice Mode",
+                            text = "Pocket voice preview",
                             style = Typography.titleMedium,
                             color = PureWhiteCard
                         )
                         Text(
-                            text = "Low-power lock screen · Audio & haptic only",
+                            text = "Not enabled in this public build",
                             style = Typography.bodySmall,
                             color = SoftLavender
                         )
@@ -452,7 +454,7 @@ fun ActiveWalkScreen(
                         .padding(horizontal = 10.dp, vertical = 4.dp)
                 ) {
                     Text(
-                        text = "Dim Screen",
+                        text = "Unavailable",
                         style = MonospaceDataSm,
                         color = PureWhiteCard
                     )
@@ -478,7 +480,7 @@ fun ActiveWalkScreen(
             )
         }
 
-        // ACTION A: Gemini Voice Companion (AI Voice Mode)
+        // ACTION A: disabled voice-companion preview
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -520,7 +522,7 @@ fun ActiveWalkScreen(
                                 horizontalArrangement = Arrangement.spacedBy(6.dp)
                             ) {
                                 Text(
-                                    text = "Gemini Voice Companion",
+                                    text = "Voice Companion Preview",
                                     style = Typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                                     color = DeepSlateText
                                 )
@@ -531,14 +533,14 @@ fun ActiveWalkScreen(
                                         .padding(horizontal = 7.dp, vertical = 2.dp)
                                 ) {
                                     Text(
-                                        text = "AI VOICE",
+                                        text = "PREVIEW",
                                         style = MonospaceDataSm.copy(fontSize = 10.sp),
                                         color = SoftLavender
                                     )
                                 }
                             }
                             Text(
-                                text = if (isAiMuted) "Muted • Tap to enable" else "Listening: Hands-free conversation active",
+                                text = "Not enabled in this public build",
                                 style = Typography.bodySmall,
                                 color = SlateMuted
                             )
@@ -550,7 +552,9 @@ fun ActiveWalkScreen(
                         modifier = Modifier
                             .clip(RoundedCornerShape(10.dp))
                             .background(PureWhiteCard)
-                            .clickable { viewModel.toggleAiMute() }
+                            .clickable {
+                                viewModel.showToast(com.example.service.GeminiLiveAudioEngine.UNAVAILABLE_MESSAGE)
+                            }
                             .padding(horizontal = 8.dp, vertical = 6.dp)
                             .testTag("mute_ai_button")
                     ) {
@@ -565,7 +569,7 @@ fun ActiveWalkScreen(
                                 modifier = Modifier.size(16.dp)
                             )
                             Text(
-                                text = if (isAiMuted) "Unmute" else "Mute AI",
+                                text = "Unavailable",
                                 style = Typography.labelSmall.copy(fontWeight = FontWeight.Bold),
                                 color = DeepSlateText
                             )
